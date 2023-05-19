@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block head_content%}
+
+{% endblock %}
+
+{% block main_content %}
+<p>Main page</p>
+
+<form action="" method="POST" name="DoctorsList">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.doctors() }}
+    </p>
+</form>
+{% endblock %}
