@@ -1,5 +1,5 @@
-from flask import Flask, render_template, Blueprint
-from forms import DoctorsList
+from flask import Flask, render_template, Blueprint, request
+from forms import MakeAppointment
 
 pages = Blueprint(
     "pages", __name__, template_folder="templates", static_folder="static"
@@ -7,8 +7,10 @@ pages = Blueprint(
 
 @pages.route("/", methods = ["GET", "POST"])
 def home():
-    form = DoctorsList()
-    return render_template("home.html", form=form)
+    formAppointment = MakeAppointment()
+    if formAppointment.validate_on_submit():
+        specialization = request.form["specialization"]
+        return render_template("home.html", form=formAppointment)
 
 @pages.route("/login")
 def login():

@@ -3,10 +3,10 @@ from wtforms import SelectField, StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired, Email
 
 
-class DoctorsList(FlaskForm):
+class MakeAppointment(FlaskForm):
     dropdowns = 10
-    doctors = SelectField("Doctors", validators=[InputRequired()])
-
+    specialization = SelectField("Choose a specialization", choices=[], validators=[InputRequired()])
+    submit = SubmitField("Show available doctors")
 
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email()])

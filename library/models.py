@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///doctors.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 class DoctorsTable(db.Model):

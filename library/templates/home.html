@@ -5,12 +5,21 @@
 {% endblock %}
 
 {% block main_content %}
-<p>Main page</p>
+<h3>Welcome to MedCorp! How can we help you?</h3>
 
-<form action="" method="POST" name="DoctorsList">
+<form action="" method="POST" name="MakeAppointment">
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.doctors() }}
-    </p>
+    <div>
+        <label>Select specialization</label>
+        <select>
+            <p>
+                {% for row in Specializations %}
+                <option value="{{ row._id }}"> {{ row.specialization }}
+                    {{ form.doctors() }}
+                    {{ wtf.quick_form(formAppointment) }}
+                </option>
+            </p>
+        </select>
+    </div>
 </form>
 {% endblock %}
