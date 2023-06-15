@@ -1,0 +1,27 @@
+{% from "functions.py" import send_email %}
+{% extends 'layout.html' %}
+
+{% block head_content %}
+
+{% endblock %}
+
+{% block main_content %}
+
+<h3>
+    In case you have any questions please feel free to contact us with the form below.
+</h3>
+
+<form onsubmit="send_email(message)" action="" name="contact" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <dl>
+        <dt> Your e-mail address </dt>
+        <dd> {{ form.email }} </dd>
+        <dt> Subject </dt>
+        <dd> {{ form.subject }} </dd>
+        <dt> Message </dt>
+        <dd> {{ form.body }} </dd>
+    </dl>
+    <input type="submit" value="Send"> {{ form.submit }}
+</form>
+
+{% endblock %}

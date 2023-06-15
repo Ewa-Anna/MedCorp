@@ -8,17 +8,21 @@
 <br>
 <div class="container col-3">
     <h2 class="header-login">Login</h2>
-    <form>
+    <form name="login" method="post" novalidate>
         <!-- Email input -->
         <div class="form-outline mb-4">
+            {{ form.hidden_tag() }}
             <input type="email" id="form2Example1" class="form-control" />
-            <label class="form-label" for="form2Example1">Email address</label>
+            <label class="form-label" for="form2Example1">Email address {{ form.email }}</label>
+
         </div>
 
         <!-- Password input -->
         <div class="form-outline mb-4">
+            {{ form.hidden_tag() }}
             <input type="password" id="form2Example2" class="form-control" />
-            <label class="form-label" for="form2Example2">Password</label>
+            <label class="form-label" for="form2Example2">Password {{ form.password }} </label>
+
         </div>
 
         <!-- 2 column grid layout for inline styling -->
@@ -38,7 +42,7 @@
         </div>
 
         <!-- Submit button -->
-        <button type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+        <button type="button" class="btn btn-primary btn-block mb-4">Sign in {{ form.submit }} </button>
 
         <!-- Register buttons -->
         <div class="text-center">

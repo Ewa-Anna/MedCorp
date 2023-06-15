@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///doctors.db'
@@ -30,4 +30,3 @@ class User:
     _id: str
     email: str
     password: str
-    movies: list[str] = field(default_factory=list)

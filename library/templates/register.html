@@ -7,49 +7,41 @@
 {% block main_content %}
 <br>
 <div class="container col-3">
-    <h2 class="header-login">Register</h2>
-    <form>
-      <!-- Name input -->
-      <div class="form-outline mb-4">
-        <input type="text" id="registerName" class="form-control" />
-        <label class="form-label" for="registerName">Name</label>
-      </div>
+  <h2 class="header-login">Register</h2>
+  <form name="register" method="post" novalidate>
 
-      <!-- Username input -->
-      <div class="form-outline mb-4">
-        <input type="text" id="registerUsername" class="form-control" />
-        <label class="form-label" for="registerUsername">Username</label>
-      </div>
+    <!-- Email input -->
+    <div class="form-outline mb-4">
+      {{ form.hidden_tag() }}
+      <input type="email" id="registerEmail" class="form-control" />
+      <label class="form-label" for="registerEmail">Email {{ form.email }} </label>
+    </div>
 
-      <!-- Email input -->
-      <div class="form-outline mb-4">
-        <input type="email" id="registerEmail" class="form-control" />
-        <label class="form-label" for="registerEmail">Email</label>
-      </div>
+    <!-- Password input -->
+    <div class="form-outline mb-4">
+      {{ form.hidden_tag() }}
+      <input type="password" id="registerPassword" class="form-control" />
+      <label class="form-label" for="registerPassword">Password {{ form.password }} </label>
+    </div>
 
-      <!-- Password input -->
-      <div class="form-outline mb-4">
-        <input type="password" id="registerPassword" class="form-control" />
-        <label class="form-label" for="registerPassword">Password</label>
-      </div>
+    <!-- Repeat Password input -->
+    <div class="form-outline mb-4">
+      {{ form.hidden_tag() }}
+      <input type="password" id="registerRepeatPassword" class="form-control" />
+      <label class="form-label" for="registerRepeatPassword">Repeat password {{ form.confirm_password }}</label>
+    </div>
 
-      <!-- Repeat Password input -->
-      <div class="form-outline mb-4">
-        <input type="password" id="registerRepeatPassword" class="form-control" />
-        <label class="form-label" for="registerRepeatPassword">Repeat password</label>
-      </div>
+    <!-- Checkbox -->
+    <div class="form-check d-flex justify-content-center mb-4">
+      <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
+        aria-describedby="registerCheckHelpText" />
+      <label class="form-check-label" for="registerCheck">
+        I have read and agree to the terms
+      </label>
+    </div>
 
-      <!-- Checkbox -->
-      <div class="form-check d-flex justify-content-center mb-4">
-        <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
-          aria-describedby="registerCheckHelpText" />
-        <label class="form-check-label" for="registerCheck">
-          I have read and agree to the terms
-        </label>
-      </div>
-
-      <!-- Submit button -->
-      <button type="submit" class="btn btn-primary btn-block mb-3">Register</button>
-    </form>
-  </div>>
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-primary btn-block mb-3">Register {{ form.submit }} </button>
+  </form>
+</div>>
 {% endblock %}

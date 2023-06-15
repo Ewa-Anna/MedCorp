@@ -1,25 +1,41 @@
-from flask import Flask, render_template, Blueprint, request
-from forms import MakeAppointment
+from flask import Flask, render_template, Blueprint, request, session
+from forms import MakeAppointment, LoginForm, RegisterForm
 
 pages = Blueprint(
     "pages", __name__, template_folder="templates", static_folder="static"
 )
 
-@pages.route("/", methods = ["GET", "POST"])
+
+@pages.route("/", methods=["GET", "POST"])
 def home():
-    formAppointment = MakeAppointment()
-    if formAppointment.validate_on_submit():
+    form = MakeAppointment()
+    if form.validate_on_submit():
         specialization = request.form["specialization"]
-        return render_template("home.html", form=formAppointment)
+        return render_template("home.html", form=form)
 
-@pages.route("/login")
+
+@pages.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    return render_template("login.html", form=form)
 
-@pages.route("/register")
+
+@pages.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    form = RegisterForm()
+    return render_template("register.html", form=form)
+
+
+@pages.route("/logout")
+def logout():
+    session.clear()
+    return render_template("home.html")
+
 
 @pages.route("/about")
 def about():
     return render_template("about.html")
+
+@pages.route("/contact")
+def contact():
+    return render_template("contact.html")
