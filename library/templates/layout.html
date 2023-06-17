@@ -27,7 +27,11 @@
     {{ navbar() }}
 
     <main>
+        <div id="page-container">
+        <div id="content-wrap" class="main-box">
         {% block main_content %} {% endblock %}
+        </div>
+    </div>
     </main>
     
     {{ footer() }}
