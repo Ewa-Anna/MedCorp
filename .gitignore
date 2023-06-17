@@ -4,5 +4,5 @@ library/docs_spec.xlsx
 SQL*.sql
 *.pyc
 library/*.pyc
-__pycache__
+library/__pycache__
 list_directories.py
