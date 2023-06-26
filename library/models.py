@@ -22,6 +22,9 @@ class Specializations(db.Model):
     _id = db.Column(db.Integer, primary_key=True)
     specialization = db.Column(db.String(500), nullable=False)
 
+    def __init__(self, specialization):
+        self.specialization = specialization
+
 db.create_all()
 
 

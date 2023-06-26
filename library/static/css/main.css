@@ -52,6 +52,10 @@ li {
     padding-bottom: 2.5rem;
 }
 
+.about {
+    text-align: justify;
+}
+
 html,
 body {
     height: 100%;

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, Blueprint, request, session
-from forms import MakeAppointment, LoginForm, RegisterForm
+from forms import MakeAppointment, LoginForm, RegisterForm, ContactForm
 
 pages = Blueprint(
     "pages", __name__, template_folder="templates", static_folder="static"
@@ -38,4 +38,5 @@ def about():
 
 @pages.route("/contact")
 def contact():
-    return render_template("contact.html")
+    form = ContactForm()
+    return render_template("contact.html", form=form)

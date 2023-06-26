@@ -6,10 +6,10 @@ def send_email(message):
     host = "smtp.gmail.com"
     port = 465
 
-    username = "lyssa.flynn@gmail.com" #Should I hide my e-mail as well?
-    password = os.getenv("PASSWORD") #How to implement system environment on github?
+    username = "example@gmail.com" 
+    password = os.getenv("PASSWORD") #System environment
 
-    receiver = "lyssa.flynn@gmail.com" #Should I hide my e-mail as well?
+    receiver = "example@gmail.com" 
     context = ssl.create_default_context()
 
     with smtplib.SMTP_SSL(host, port, context=context) as server:
