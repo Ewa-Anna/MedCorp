@@ -1,7 +1,7 @@
 <h1> MedCorp </h1>
 
 This is a website for doctor's appointment registration for fictional medical company.
-Work still in progress.
+<b>Work still in progress.</b>
 <br>
 <h2> How to install and run the project? </h2>
 <br>
