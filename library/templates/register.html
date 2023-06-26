@@ -8,27 +8,38 @@
 <br>
 <div class="container col-3">
   <h2 class="header-login">Register</h2>
-  <form name="register" method="post" novalidate>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="flash">
+    {{ messages[0] }}
+    <br>
+    <a href="{{ url_for('auth.login') }}"> Login page </a>.
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <form action="/register" name="register" method="post" novalidate>
 
     <!-- Email input -->
     <div class="form-outline mb-4">
-      {{ form.hidden_tag() }}
+
       <input type="email" id="registerEmail" class="form-control" />
-      <label class="form-label" for="registerEmail">Email {{ form.email }} </label>
+      <label class="form-label" for="registerEmail">Email </label>
     </div>
 
     <!-- Password input -->
     <div class="form-outline mb-4">
-      {{ form.hidden_tag() }}
+
       <input type="password" id="registerPassword" class="form-control" />
-      <label class="form-label" for="registerPassword">Password {{ form.password }} </label>
+      <label class="form-label" for="registerPassword">Password </label>
     </div>
 
     <!-- Repeat Password input -->
     <div class="form-outline mb-4">
-      {{ form.hidden_tag() }}
+
       <input type="password" id="registerRepeatPassword" class="form-control" />
-      <label class="form-label" for="registerRepeatPassword">Repeat password {{ form.confirm_password }}</label>
+      <label class="form-label" for="registerRepeatPassword">Repeat password </label>
     </div>
 
     <!-- Checkbox -->
@@ -41,7 +52,7 @@
     </div>
 
     <!-- Submit button -->
-    <button type="submit" class="btn btn-primary btn-block mb-3">Register {{ form.submit }} </button>
+    <button type="submit" class="btn btn-primary btn-block mb-3">Register </button>
   </form>
 </div>>
 {% endblock %}

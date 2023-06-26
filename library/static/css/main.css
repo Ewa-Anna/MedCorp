@@ -55,6 +55,11 @@ li {
 .about {
     text-align: justify;
 }
+.flash {
+    background-color: #FBB0B0;
+    padding: 10px;
+    width: 250px;
+}
 
 html,
 body {

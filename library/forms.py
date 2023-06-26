@@ -28,8 +28,9 @@ class RegisterForm(FlaskForm):
 
 
 class ContactForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
     email = StringField("Email", validators=[InputRequired(), Email()])
     subject = StringField("Subject", validators=[DataRequired()])
-    body = StringField("Text", widget=TextArea())
+    body = StringField("Text", widget=TextArea(), validators=[DataRequired()])
     submit = SubmitField("Send message")
 

@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block head_content%}
+
+{% endblock %}
+
+{% block main_content %}
+<h3>Welcome to MedCorp! How can we help you?</h3>
+
+<form action="" method="POST" name="MakeAppointment">
+    {{ form.hidden_tag() }}
+    <div>
+        <label>Select specialization</label>
+        <select>
+            <p>
+                {% for row in Specializations %}
+                <option value="{{ row._id }}"> {{ row.specialization }}
+                    {{ form.doctors() }}
+                    {{ wtf.quick_form(formAppointment) }}
+                </option>
+                {% endfor %}
+            </p>
+        </select>
+    </div>
+</form>
+{% endblock %}

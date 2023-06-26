@@ -8,20 +8,29 @@
 <br>
 <div class="container col-3">
     <h2 class="header-login">Login</h2>
-    <form name="login" method="post" novalidate>
+   
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="flash">
+    {{ messages[0] }}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+    <form action="/login" name="login" method="post" novalidate>
         <!-- Email input -->
         <div class="form-outline mb-4">
             {{ form.hidden_tag() }}
             <input type="email" id="form2Example1" class="form-control" />
-            <label class="form-label" for="form2Example1">Email address {{ form.email }}</label>
+            <label class="form-label" for="form2Example1">Email address</label>
 
         </div>
 
         <!-- Password input -->
         <div class="form-outline mb-4">
-            {{ form.hidden_tag() }}
+ 
             <input type="password" id="form2Example2" class="form-control" />
-            <label class="form-label" for="form2Example2">Password {{ form.password }} </label>
+            <label class="form-label" for="form2Example2"> Password </label>
 
         </div>
 
@@ -42,7 +51,7 @@
         </div>
 
         <!-- Submit button -->
-        <button type="button" class="btn btn-primary btn-block mb-4">Sign in {{ form.submit }} </button>
+        <button type="button" class="btn btn-primary btn-block mb-4">Sign in </button>
 
         <!-- Register buttons -->
         <div class="text-center">
