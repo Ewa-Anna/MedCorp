@@ -1,6 +1,8 @@
-from flask import Flask, render_template, Blueprint, request, session, flash
-from forms import MakeAppointment, ContactForm
+from flask import Flask, render_template, Blueprint, request, session, flash, abort
+from forms import ContactForm
 from flask_login import login_required, current_user
+from mail import Message, mail
+from models import User
 
 pages = Blueprint(
     "pages", __name__, template_folder="templates", static_folder="static"
@@ -13,10 +15,17 @@ def home():
 @pages.route("/appointment", methods=["GET", "POST"])
 @login_required
 def appointment():
-    form = MakeAppointment()
-    if form.validate_on_submit():
-        specialization = request.form["specialization"]
-    return render_template("appointment.html", form=form)
+    with open("templates/specs.txt", "r") as f:
+        specs = f.readlines()
+    return render_template("appointment.html", specs=specs)
+
+@pages.route("/profile/<int:_id>", methods=["GET", "POST"])
+def profile(_id: int):
+    profile_data = current_user.db.user.find_one({"_id": _id})
+    if not profile_data:
+        abort(404)
+    profile = User(**profile_data)
+    return render_template("profile.html", profile=profile)
 
 @pages.route("/about")
 def about():

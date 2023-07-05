@@ -18,22 +18,26 @@
 
 <body>
     <div class="container">
-        <div class="navbar-nav">
+        <div class="logo-image">
+            <img src="static/svg/hospital.png" alt="Logo" height="90px" width="90px" />
+        </div>
+        <div class="logo-word">
             <h1 class="brand-name"> MedCorp, Inc. </h1>
-            <a class="nav-item nav-link" style="text-align:right;" href="/login">Sign in</a>
         </div>
     </div>
-
-    {{ navbar() }}
+    <br>
+        <div class="navbar-nav">
+            {{ navbar() }}
+        </div>
 
     <main>
         <div id="page-container">
-        <div id="content-wrap" class="main-box">
-        {% block main_content %} {% endblock %}
+            <div id="content-wrap" class="main-box">
+                {% block main_content %} {% endblock %}
+            </div>
         </div>
-    </div>
     </main>
-    
+
     {{ footer() }}
 </body>
 

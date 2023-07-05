@@ -19,7 +19,7 @@
     <p> Thank you for your message! </p>
 {% else %}
 
-<form action="{{ url_for('contact') }}" name="contact" method="post" novalidate>
+<form action="{{ url_for('pages.contact') }}" name="contact" method="post" novalidate>
     {{ form.hidden_tag() }}
     <dl>
         <dt> Name </dt>
@@ -33,5 +33,5 @@
     </dl>
      {{ form.submit }}
 </form>
-
+{% endif %}
 {% endblock %}

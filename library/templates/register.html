@@ -6,7 +6,7 @@
 
 {% block main_content %}
 <br>
-<div class="container col-3">
+<div class="container col-5">
   <h2 class="header-login">Register</h2>
 
   {% with messages = get_flashed_messages() %}
@@ -21,28 +21,18 @@
 
   <form action="/register" name="register" method="post" novalidate>
 
-    <!-- Email input -->
     <div class="form-outline mb-4">
-
-      <input type="email" id="registerEmail" class="form-control" />
-      <label class="form-label" for="registerEmail">Email </label>
+      {{ form.email(class="form-control") }}
+      <label class="form-label" for="email">Email address</label>
     </div>
-
-    <!-- Password input -->
     <div class="form-outline mb-4">
-
-      <input type="password" id="registerPassword" class="form-control" />
-      <label class="form-label" for="registerPassword">Password </label>
+      {{ form.password(class="form-control") }}
+      <label class="form-label" for="password">Password </label>
     </div>
-
-    <!-- Repeat Password input -->
     <div class="form-outline mb-4">
-
-      <input type="password" id="registerRepeatPassword" class="form-control" />
-      <label class="form-label" for="registerRepeatPassword">Repeat password </label>
+      {{ form.confirm_password(class="form-control") }}
+      <label class="form-label" for="confirm_password">Repeat password </label>
     </div>
-
-    <!-- Checkbox -->
     <div class="form-check d-flex justify-content-center mb-4">
       <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
         aria-describedby="registerCheckHelpText" />
@@ -50,9 +40,8 @@
         I have read and agree to the terms
       </label>
     </div>
+    {{ form.submit(class="btn btn-primary btn-block mb-3") }}
 
-    <!-- Submit button -->
-    <button type="submit" class="btn btn-primary btn-block mb-3">Register </button>
   </form>
 </div>>
 {% endblock %}
