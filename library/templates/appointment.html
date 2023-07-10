@@ -6,24 +6,21 @@
 
 {% block main_content %}
 <h3>Welcome to MedCorp! How can we help you?</h3>
-<div class="dropdown">
-    <form action="">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Please select specialization
-        </button>
-        <select name="specs" id="specs">
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {% for row in specs %}
-                <option class="dropdown-item">
-                    {{ row }}
-                </option>
-                {% endfor %}
-            </div>
-            <br>
-            <input class="btn btn-primary" type="submit" value="Submit">
-        </select>
-    </form>
-</div>
+<form action="">
+
+    <select name="specs" id="specs" class="form-select" aria-label="Default select example">
+        <option selected> Please select specialization</option>
+
+        {% for row in specs %}
+        <option class="dropdown-item">
+            {{ row }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <br>
+    <input class="btn btn-primary" type="submit" value="Submit">
+
+</form>
 
 {% endblock %}

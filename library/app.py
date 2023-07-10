@@ -16,13 +16,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-mail.init_app(app)
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = "example@example.com"
 app.config["MAIL_PASSWORD"] = "PASSWORD"
-
+mail.init_app(app)
 
 app.register_blueprint(pages)
 app.register_blueprint(authorize)

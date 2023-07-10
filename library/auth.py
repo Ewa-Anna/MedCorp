@@ -5,6 +5,7 @@ from models import User
 from flask_login import login_user, login_required, logout_user
 from datetime import datetime
 from db import db
+from valid import isProperMail
 
 authorize = Blueprint(
     "authorize", __name__, template_folder="templates", static_folder="static"
@@ -22,12 +23,14 @@ def login_post():
     remember = True if request.form.get("remember") else False
 
     user = User.query.filter_by(email=email).first()
-
+    session["logged_in"] = True
+    
     if not user or not check_password_hash(user.password, password):
         flash("Email or password is not correct.")
         return redirect(url_for("authorize.login"))
     
     login_user(user, remember=remember)
+
     return redirect(url_for("pages.home"))
 
 @authorize.route("/register", methods=["GET"])
@@ -51,6 +54,10 @@ def register_post():
         flash("User already exists.")
         return redirect("authorize.login")
     
+    if not isProperMail(email):
+        flash("Please provide correct email address.")
+        return redirect("authorize.login")
+
     if password != confirm_password:
         flash("Passwords are not matching.")
         return render_template("register.html")

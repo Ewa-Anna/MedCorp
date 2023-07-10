@@ -19,7 +19,7 @@ This is a website for doctor's appointment registration for fictional medical co
 <br>
 4. Run the code
 <br>
-<code> python app.py </code>
+<code> flask --app app run </code>
 <br>
 <br>
 <h2> Project structure overview </h2>
