@@ -8,7 +8,7 @@ from config import Config
 from db.models import User
 
 from flask_login import LoginManager
-from db import db
+from db.db import db
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
@@ -28,8 +28,8 @@ app.config["MAIL_USERNAME"] = "example@example.com"
 app.config["MAIL_PASSWORD"] = "PASSWORD"
 mail.init_app(app)
 
-app.register_blueprint(pages)
-app.register_blueprint(authorize)
+app.register_blueprint(pages, url_prefix='/routes')
+app.register_blueprint(authorize, url_prefix='/routes')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
