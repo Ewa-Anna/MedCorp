@@ -1,8 +1,11 @@
 from flask import Flask
-from routes import pages
-from auth import authorize
+from routes.routes import pages
+from routes.auth import authorize
 import os
-from mail import mail
+from routes.mail import mail
+from flask_migrate import Migrate
+from config import Config
+from db.models import User
 
 from flask_login import LoginManager
 from db import db
@@ -11,6 +14,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config.from_object(Config)
+migrate = Migrate(app, db)
 
 db.init_app(app)
 with app.app_context():
@@ -30,13 +35,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "authorize.login"
 
-from models import User
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-

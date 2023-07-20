@@ -1,9 +1,9 @@
-from flask import Flask, render_template, Blueprint, request, session, flash, abort, redirect, url_for
-from forms import ContactForm
-from flask_login import login_required, current_user
+from flask import render_template, Blueprint, request, flash, abort
+from db.forms import ContactForm
+from flask_login import login_required
 from mail import Message, mail
-from models import User, Profile
-from db import db
+from db.models import Profile
+
 
 pages = Blueprint(
     "pages", __name__, template_folder="templates", static_folder="static"
@@ -27,21 +27,11 @@ def appointment():
 @login_required
 def profile(_id: int):
     if request.method == "GET":
-        # profile_data = db.user.find_one({"_id": _id})
-        profile_data = Profile.query.filter_by(_id=_id).first()
+        profile_data = Profile.query.filter_by(userid=_id).first()
         if not profile_data:
             abort(404)
-        # profile = User(**profile_data)
-        _id = profile_data._id
-        name = profile_data.name
-        surname = profile_data.surname
-        birthdate = profile_data.birthdate
-        email = profile_data.email
-        telephone = profile_data.telephone
-        userid = profile_data.userid
-        createdDate = profile_data.createdDate
-
-        return render_template("profile.html", _id=_id, name=name, surname=surname, birthdate=birthdate, email=email, telephone=telephone, userid=userid, createdDate=createdDate)
+        else:
+            return render_template("profile.html", profile_data=profile_data)
 
 
 @pages.route("/about")
@@ -60,9 +50,9 @@ def contact():
         else:
             msg = Message(form.subject.data, sender="example@example.com",
                           recipients=["example@example.com"])
-            msg.body = """ 
+            msg.body = """
             From: %s &lt;%s&gt;
-            %s 
+            %s
             """ % (form.name.data, form.email.data, form.message.data)
             mail.send(msg)
             return "E-mail sent"
