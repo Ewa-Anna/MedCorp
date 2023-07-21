@@ -11,9 +11,9 @@
     <select name="specs" id="specs" class="form-select" aria-label="Default select example">
         <option selected> Please select specialization</option>
 
-        {% for row in specs %}
+        {% for spec in specs %}
         <option class="dropdown-item">
-            {{ row }}
+            {{ spec.specialization }}
         </option>
         {% endfor %}
     </select>

@@ -1,11 +1,10 @@
-from flask import render_template, Blueprint, request, session, \
-    flash, redirect, url_for
+from flask import render_template, Blueprint, request, session, flash, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-from db.forms import LoginForm, RegisterForm
-from db.models import User, Profile
+from ..db.forms import LoginForm, RegisterForm
+from ..db.models import User, Profile
 from flask_login import login_user, login_required, logout_user
-from db import db
-from valid import isProperMail
+from ..db.db import db
+from ..valid import isProperMail
 
 authorize = Blueprint(
     "authorize", __name__,
@@ -30,7 +29,7 @@ def login_post():
 
     if not user or not check_password_hash(user.password, password):
         flash("Email or password is not correct.")
-        return redirect(url_for("authorize.login"))
+        return redirect(url_for(".login"))
 
     session["logged_in"] = True
     login_user(user, remember=remember)

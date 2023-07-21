@@ -1,14 +1,16 @@
-from flask import Flask
-from routes.routes import pages
-from routes.auth import authorize
 import os
-from routes.mail import mail
-from flask_migrate import Migrate
 from config import Config
-from db.models import User
 
+from flask import Flask
+from flask_migrate import Migrate
 from flask_login import LoginManager
-from db.db import db
+
+from .routes.routes import pages
+from .routes.auth import authorize
+from .routes.mail import mail
+
+from .db.models import User
+from .db.db import db
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
@@ -28,8 +30,8 @@ app.config["MAIL_USERNAME"] = "example@example.com"
 app.config["MAIL_PASSWORD"] = "PASSWORD"
 mail.init_app(app)
 
-app.register_blueprint(pages, url_prefix='/routes')
-app.register_blueprint(authorize, url_prefix='/routes')
+app.register_blueprint(pages)
+app.register_blueprint(authorize)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

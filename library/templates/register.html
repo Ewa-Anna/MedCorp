@@ -14,7 +14,7 @@
   <div class="flash">
     {{ messages[0] }}
     <br>
-    <a href="{{ url_for('auth.login') }}"> Login page </a>.
+    <a href="{{ url_for('.login') }}"> Login page </a>.
   </div>
   {% endif %}
   {% endwith %}
@@ -43,5 +43,5 @@
     {{ form.submit(class="btn btn-primary btn-block mb-3") }}
 
   </form>
-</div>>
+</div>
 {% endblock %}

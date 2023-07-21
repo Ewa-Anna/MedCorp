@@ -1,12 +1,15 @@
 from flask import render_template, Blueprint, request, flash, abort
-from db.forms import ContactForm
+from ..db.forms import ContactForm
 from flask_login import login_required
-from mail import Message, mail
-from db.models import Profile
+#from routes.mail import mail
+from ..db.models import Profile, Specializations
+from ..db.db import db
 
 
 pages = Blueprint(
-    "pages", __name__, template_folder="templates", static_folder="static"
+    "pages", __name__,
+    template_folder="templates",
+    static_folder="static"
 )
 
 
@@ -18,9 +21,10 @@ def home():
 @pages.route("/appointment", methods=["GET", "POST"])
 @login_required
 def appointment():
-    with open("templates/specs.txt", "r") as f:
-        specs = f.readlines()
-    return render_template("appointment.html", specs=specs)
+    try: 
+        specs = db.session.execute(db.select(Specializations))
+    except:
+        return render_template("appointment.html", specs=specs)
 
 
 @pages.route("/profile/<int:_id>", methods=["GET", "POST"])
@@ -47,14 +51,14 @@ def contact():
         if form.validate() == False:
             flash("All fields are required.")
             return render_template("contact.html", form=form)
-        else:
-            msg = Message(form.subject.data, sender="example@example.com",
-                          recipients=["example@example.com"])
-            msg.body = """
-            From: %s &lt;%s&gt;
-            %s
-            """ % (form.name.data, form.email.data, form.message.data)
-            mail.send(msg)
-            return "E-mail sent"
+        # else:
+        #     msg = Message(form.subject.data, sender="example@example.com",
+        #                   recipients=["example@example.com"])
+        #     msg.body = """
+        #     From: %s &lt;%s&gt;
+        #     %s
+        #     """ % (form.name.data, form.email.data, form.message.data)
+        #     mail.send(msg)
+        #     return "E-mail sent"
     elif request.method == "GET":
         return render_template("contact.html", form=form)

@@ -27,6 +27,25 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
 
+class RestorePassword(FlaskForm):
+    email = StringField("Email", validators=[InputRequired(), Email()])
+    submit = SubmitField("Restore password")
+
+
+class ChangePassword(FlaskForm):
+    password = PasswordField("Password", validators=[
+                             InputRequired(),
+                             Length(min=6, max=20,
+                                    message="Password must be \
+                                    between 6 and 10 characters long.")])
+    confirm_password = PasswordField("Confirm your password", validators=[
+                                     InputRequired(),
+                                     EqualTo("password",
+                                             message="Your \
+                                             passwords are not matching.")])
+    submit = SubmitField("Change password")
+
+
 class ContactForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     email = StringField("Email", validators=[InputRequired(), Email()])

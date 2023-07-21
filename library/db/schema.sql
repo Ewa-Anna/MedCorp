@@ -1,23 +1,20 @@
-USE MedCorpDB
-GO
-
 IF NOT EXISTS (
 	SELECT name
 	FROM sys.databases
-	WHERE name = N'MedCorpDB'
+	WHERE name = N'test.db'
 )
 
-CREATE DATABASE [MedCorpDB]
-GO
+DROP TABLE IF EXISTS DoctorsTable;
+DROP TABLE IF EXISTS Specializations;
 
-IF OBJECT_ID(N'dbo.MakeAppointment', N'U') IS NULL
-	CREATE TABLE MakeAppointment (
+IF OBJECT_ID(N'dbo.Specializations', N'U') IS NULL
+	CREATE TABLE Specializations (
 		specialization_ID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 		specialization VARCHAR(250) NOT NULL,
 	);
 GO
 
-INSERT INTO MakeAppointment (specialization)
+INSERT INTO Specializations (specialization)
 VALUES ('Allergy and immunology'),
 ('Anesthesiology'),
 ('Dermatology'),
@@ -43,7 +40,7 @@ IF OBJECT_ID(N'dbo.DoctorsTable', N'U') IS NULL
 		doctor_ID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 		doc_name CHAR(250) NOT NULL,
 		doc_surname CHAR(250) NOT NULL,
-		specialization_ID INT FOREIGN KEY REFERENCES MakeAppointment(specialization_ID),
+		specialization_ID INT FOREIGN KEY REFERENCES Specializations(specialization_ID),
 	);
 GO
 

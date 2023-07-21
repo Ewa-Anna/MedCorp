@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from flask_login import UserMixin
-from db import db
+from .db import db
 from datetime import datetime
 
 
@@ -38,7 +38,7 @@ class Profile(db.Model):
     birthdate = db.Column(db.DateTime, unique=False)
     email = db.Column(db.String(100), unique=True)
     telephone = db.Column(db.Integer, unique=False)
-    insurance = db.Column(db.Boolean, nullable=False)
+    insurance = db.Column(db.Boolean, unique=True)
     userid = db.Column(db.Integer, db.ForeignKey("user._id"), nullable=False)
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
@@ -58,17 +58,10 @@ class DoctorsTable(db.Model):
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(500), nullable=False)
     surname = db.Column(db.String(500), nullable=False)
-    specialization = db.Column(db.String(500), nullable=False)
+    specs_id = db.Column(db.Integer, db.ForeignKey("specializations._id"), nullable=False)
 
-    def __init__(self, name, surname, specialization):
-        self.name = name
-        self.surname = surname
-        self.specialization = specialization
-
+    specializations = db.relationship("Specializations", uselist=False, cascade="delete")
 
 class Specializations(db.Model):
     _id = db.Column(db.Integer, primary_key=True)
     specialization = db.Column(db.String(500), nullable=False)
-
-    def __init__(self, specialization):
-        self.specialization = specialization
