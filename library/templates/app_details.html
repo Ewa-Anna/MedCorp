@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block head_content%}
+
+{% endblock %}
+
+{% block main_content %}
+<div class="appointment_container">
+    {% if appointments %}
+    <h2>Doctor Details</h2>
+    <ul>
+      {% for appointment in appointments %}
+        <li>{{ appointment.day }} at {{ appointment.time }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No available appointments for this doctor.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

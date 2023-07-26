@@ -1,20 +1,4 @@
-IF NOT EXISTS (
-	SELECT name
-	FROM sys.databases
-	WHERE name = N'test.db'
-)
-
-DROP TABLE IF EXISTS DoctorsTable;
-DROP TABLE IF EXISTS Specializations;
-
-IF OBJECT_ID(N'dbo.Specializations', N'U') IS NULL
-	CREATE TABLE Specializations (
-		specialization_ID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-		specialization VARCHAR(250) NOT NULL,
-	);
-GO
-
-INSERT INTO Specializations (specialization)
+INSERT INTO specializations (specialization)
 VALUES ('Allergy and immunology'),
 ('Anesthesiology'),
 ('Dermatology'),
@@ -35,16 +19,7 @@ VALUES ('Allergy and immunology'),
 ('Surgery'),
 ('Urology');
 
-IF OBJECT_ID(N'dbo.DoctorsTable', N'U') IS NULL
-	CREATE TABLE DoctorsTable (
-		doctor_ID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-		doc_name CHAR(250) NOT NULL,
-		doc_surname CHAR(250) NOT NULL,
-		specialization_ID INT FOREIGN KEY REFERENCES Specializations(specialization_ID),
-	);
-GO
-
-INSERT INTO DoctorsTable (doc_name, doc_surname, specialization_ID)
+INSERT INTO doctorstable (name, surname, specs_id)
 VALUES ('Zoya', 'Price', 6),
 ('Mattie', 'Farley', 8),
 ('Elias', 'Bentley', 3),
@@ -65,3 +40,4 @@ VALUES ('Zoya', 'Price', 6),
 ('Brodie', 'Finley', 4),
 ('Jeffrey', 'Reeves', 2),
 ('Fay', 'Kline', 7);
+

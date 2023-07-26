@@ -5,22 +5,45 @@
 {% endblock %}
 
 {% block main_content %}
-<h3>Welcome to MedCorp! How can we help you?</h3>
-<form action="">
 
+{% if current_user.isDoctor %}
+
+<p> Create empty appointment <a href="{{ url_for('pages.create_app') }}">here</a>. </p>
+
+{% else %}
+
+<div class="appointment_container">
+<form action="{{ url_for('pages.appointment', app_id=_id)}}" method="post">
     <select name="specs" id="specs" class="form-select" aria-label="Default select example">
         <option selected> Please select specialization</option>
-
-        {% for spec in specs %}
-        <option class="dropdown-item">
-            {{ spec.specialization }}
-        </option>
-        {% endfor %}
+            {% for spec in specs %}
+                <option value="{{ spec.specialization }}" class="dropdown-item">
+                    {{ spec.specialization }}
+                </option>
+            {% endfor %}
     </select>
-
+    <br>
     <br>
     <input class="btn btn-primary" type="submit" value="Submit">
+    <br>
+    <br>
+    {% if doctors %}
+    <p> Available doctors: </p>
+        {% for doc in doctors %}
+            <option class="dropdown-item">
+                {{ doc.name }} 
+                {{ doc.surname }}
+            </option>
+        {% endfor %}
+    {% else %}
+        {% if request.method == "POST" %}
+        <p>Currently, there are no available doctors.</p>
+        {% endif %}
+    {% endif %}
 
 </form>
+</div>
+
+{% endif %}
 
 {% endblock %}

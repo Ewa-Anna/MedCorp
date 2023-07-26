@@ -6,7 +6,21 @@
 
 {% block main_content %}
 
-<h3> Welcome, {{ profile_data.email }}!</h3>
-
-
+{% if profile_data %}
+    <h3> Welcome, {{ profile_data.email }}!</h3>
+    <h4> User profile</h4>
+    <p> Name: {{ profile_data.name }} </p>
+    <p> Surname: {{ profile_data.surname }} </p>
+    <p> Birthdate: {{ profile_data.birthdate }} </p>
+    <p> Email: {{ profile_data.email }} </p>
+    <p> Telephone: {{ profile_data.telephone }} </p>
+    <a href="{{ url_for('pages.edit_profile', userid=profile_data._id) }}">Edit Profile</a>
+    
+    <!-- {% if current_user.isDoctor %}
+        choose specialization
+    {% endif %} -->
+{% else %}
+    <h3> User not found </h3>
+    <p> The User with specified ID does not exist. </p>
+{% endif %}
 {% endblock %}

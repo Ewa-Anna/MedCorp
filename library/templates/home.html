@@ -6,5 +6,13 @@
 
 {% block main_content %}
 <h3>Welcome to MedCorp! How can we help you?</h3>
+{% if current_user.isDoctor %}
+<h4> For Doctors: </h4>
+<a href="/appointment"> Create an appoinment </a>
+<br>
+{% else %}
+<h4> For Patients: </h4>
 <a href="/appointment"> Make an appoinment </a>
+<br>
+{% endif %}
 {% endblock %}

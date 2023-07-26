@@ -6,6 +6,8 @@ from datetime import datetime
 
 @dataclass
 class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+    
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
@@ -16,6 +18,7 @@ class User(UserMixin, db.Model):
     isPatient = db.Column(db.Boolean, default=True, nullable=False)
     isActive = db.Column(db.Boolean, default=True, nullable=False)
 
+
     def __init__(self, email, password, isAdmin,
                  isDoctor, isPatient, isActive):
         self.email = email
@@ -24,6 +27,7 @@ class User(UserMixin, db.Model):
         self.isDoctor = isDoctor
         self.isPatient = isPatient
         self.isActive = isActive
+
 
     def get_id(self):
         return self._id
@@ -47,14 +51,23 @@ class Profile(db.Model):
 
 
 class Appointment(db.Model):
+    __tablename__ = 'appointment'
+
     app_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    app_date = db.Column(db.DateTime, nullable=False, unique=True)
-    app_time = db.Column(db.DateTime, nullable=False, unique=True)
+    app_date = db.Column(db.Text, nullable=False)
+    app_time = db.Column(db.Text, nullable=False)
     availability = db.Column(db.Boolean, nullable=False, default=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey("user._id"))
+    doctor_id = db.Column(db.Integer, db.ForeignKey("doctorstable._id"), nullable=False)
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
+    
+    user = db.relationship("User", uselist=False, cascade="delete")
+    doctorstable = db.relationship("DoctorsTable", uselist=False, cascade="delete")
 
 class DoctorsTable(db.Model):
+    __tablename__ = 'doctorstable'
+
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(500), nullable=False)
     surname = db.Column(db.String(500), nullable=False)
@@ -63,5 +76,7 @@ class DoctorsTable(db.Model):
     specializations = db.relationship("Specializations", uselist=False, cascade="delete")
 
 class Specializations(db.Model):
+    __tablename__ = 'specializations'
+
     _id = db.Column(db.Integer, primary_key=True)
     specialization = db.Column(db.String(500), nullable=False)

@@ -6,3 +6,4 @@ SQL*.sql
 library/*.pyc
 library/__pycache__
 list_directories.py
+.env

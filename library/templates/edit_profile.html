@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block head_content %}
+
+{% endblock %}
+
+{% block main_content %}
+<h4> Edit profile</h4>
+
+<form method="post" name="editprofile" action="{{ url_for('edit_profile', userid=profile_data._id)}}">
+    {{ profile_data.hidden_tag() }}
+    <dl>
+        <dt>Name</dt>
+        <dd> {{ profile_data.name }}</dd>
+        <dt>Surname</dt>
+        <dd> {{ profile_data.surname }}</dd>
+        <dt>Birthdate</dt>
+        <dd>{{ profile_data.birthdate }}</dd>
+        <dt>Telephone</dt>
+        <dd>{{ profile_data.telephone }}</dd>
+    </dl>
+    {{ profile_data.submit }}
+</form>
+{% endblock %}
