@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block head_content %}
+
+{% endblock %}
+
+{% block main_content %}
+
+
+
+<h4> Edit User</h4>
+
+<form method="post" name="edituser" action="{{ url_for('pages.edit_user', _id=user._id) }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.email.label }} {{ form.email(class="form-control") }}
+    </div>
+    <div class="form-check">
+        {{ form.isAdmin.label }} {{ form.isAdmin(class="form-check-input") }}
+    </div>
+    <div class="form-check">
+        {{ form.isDoctor.label }} {{ form.isDoctor(class="form-check-input") }}
+    </div>
+    <div class="form-check">
+        {{ form.isPatient.label }} {{ form.isPatient(class="form-check-input") }}
+    </div>
+    <div class="form-check">
+        {{ form.isActive.label }} {{ form.isActive(class="form-check-input") }}
+    </div>
+    <br>
+    <input type="submit" value="Update" class="btn btn-primary">
+</form>
+{% endblock %}

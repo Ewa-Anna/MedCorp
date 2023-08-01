@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block head_content%}
+<title> Admin </title>
+{% endblock %}
+
+{% block main_content %}
+
+<h3> Admin Panel </h3>
+
+{% if current_user.isAdmin %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-primary" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+<h4> Add new specialization </h4>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.specialization }}
+    {{ form.submit }}
+</form>
+<br>
+<h4> Existing Specializations </h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th> Specialization </th>
+            <th> Delete </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for spec in specializations %}
+        <tr>
+            <td> {{ spec.specialization }} </td>
+            <td> <a href="{{ url_for('pages.delete_spec', spec_id=spec._id) }}" class="btn btn-danger"><i
+                        class="fas fa-trash-alt"></i></a> </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You do not have permission to access the Admin Panel.</p>
+{% endif %}
+
+{% endblock %}

@@ -89,3 +89,25 @@ body {
     justify-content: center;
     height: auto;
 }
+
+input[readonly] {
+    background-color: #f8f8f8; 
+    color: #666;
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    padding: 8px 12px;
+    font-size: 16px; 
+    box-shadow: none; 
+    cursor: not-allowed; 
+}
+
+input.formclass{ 
+    border: 1px solid #ddd; 
+    border-color: #ccc;
+    border-radius: 5px; 
+    padding: 8px 12px;
+    font-size: 16px; 
+    box-shadow: none; 
+    cursor: text;
+}
+

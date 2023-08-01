@@ -1,5 +1,6 @@
 import os
 from config import Config
+from dotenv import load_dotenv
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -15,6 +16,11 @@ from .db.db import db
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
+
+load_dotenv()
+EMAIL = os.getenv("EMAIL")
+PASSWORD = os.getenv("PASSWORD")
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config.from_object(Config)
 migrate = Migrate(app, db)
@@ -23,11 +29,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+# app.config["MAIL_DEBUG"] = True
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
-app.config["MAIL_USERNAME"] = "example@example.com"
-app.config["MAIL_PASSWORD"] = "PASSWORD"
+app.config["MAIL_USERNAME"] = EMAIL
+app.config["MAIL_PASSWORD"] = PASSWORD
 mail.init_app(app)
 
 app.register_blueprint(pages)

@@ -6,15 +6,22 @@
 
 {% block main_content %}
 <div class="appointment_container">
-    {% if appointments %}
-    <h2>Doctor Details</h2>
-    <ul>
-      {% for appointment in appointments %}
-        <li>{{ appointment.day }} at {{ appointment.time }}</li>
-      {% endfor %}
-    </ul>
+    <h2>Appointment Details</h2>
+    <dl>
+      <dt>Date</dt>
+      <dd>{{ appointment.app_date }}</dd>
+      <dt>Time</dt>
+      <dd>{{ appointment.app_time }}</dd>
+      <dt>Availability</dt>
+      <dd>{{ "Available" if appointment.availability else "Booked" }}</dd>
+    </dl>
+  {% if appointment.availability %}
+    <form method="post" action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}">
+      {{ form.hidden_tag() }}
+      <button type="submit" class="btn btn-primary">Book Appointment</button>
+    </form>
   {% else %}
-    <p>No available appointments for this doctor.</p>
+    <p>This appointment is no longer available.</p>
   {% endif %}
 
 </div>

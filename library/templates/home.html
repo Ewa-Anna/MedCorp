@@ -10,6 +10,9 @@
 <h4> For Doctors: </h4>
 <a href="/appointment"> Create an appoinment </a>
 <br>
+{% elif current_user.isAdmin %}
+<a href="/adminpanel"> Admin panel </a>
+<br>
 {% else %}
 <h4> For Patients: </h4>
 <a href="/appointment"> Make an appoinment </a>

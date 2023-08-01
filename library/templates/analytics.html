@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block head_content%}
+<title> Admin </title>
+{% endblock %}
+
+{% block main_content %}
+
+<h3> Admin Panel </h3>
+
+{% if current_user.isAdmin %}
+
+<p>Total number of users: {{ total_users }}</p>
+<p>Total number of doctors: {{ doctors_count }}</p>
+<p>Total number of appointments: {{ appointments_count }}</p>
+
+{% else %}
+<p>You do not have permission to access the Admin Panel.</p>
+{% endif %}
+
+{% endblock %}

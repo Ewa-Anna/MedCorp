@@ -15,6 +15,9 @@
         <div>
             {% if session["logged_in"] == True %}
             <div class="navbar-nav">
+                {% if current_user.isAdmin %}
+                <a class="nav-item nav-link" style="text-align:right;" href="/adminpanel">Admin Panel</a>
+                {% endif %}
                 <a class="nav-item nav-link" style="text-align:right;" href="/profile/{{ current_user._id }}">Profile</a>
                 <a class="nav-item nav-link" style="text-align:right;" href="{{ url_for('authorize.logout') }}">Logout</a>
             </div>

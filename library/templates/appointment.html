@@ -12,7 +12,7 @@
 
 {% else %}
 
-<div class="appointment_container">
+<!-- <div class="appointment_container">
 <form action="{{ url_for('pages.appointment', app_id=_id)}}" method="post">
     <select name="specs" id="specs" class="form-select" aria-label="Default select example">
         <option selected> Please select specialization</option>
@@ -39,11 +39,25 @@
         {% if request.method == "POST" %}
         <p>Currently, there are no available doctors.</p>
         {% endif %}
-    {% endif %}
-
+    {% endif %} 
 </form>
 </div>
+-->
 
+<h3> Available Appointments: </h3>
+{% if appointment %}
+<dl>
+    {% for app in appointment %}
+    <dt>{{ app.app_date }} at {{ app.app_time }}</dt>
+    {% if app.profile and app.profile.user.isDoctor %}
+    <dt> with {{ app.profile.user.name }} {{ app.profile.user.surname }}</dt>
+    {% else %}
+    <dt>Doctor information not available</dt>
+    {% endif %}
+    {% endfor %}
+</dl>
+{% else %}
+<p>No empty appointment slots available at the moment.</p>
 {% endif %}
-
+{% endif %}
 {% endblock %}
