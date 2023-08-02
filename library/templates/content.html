@@ -44,6 +44,47 @@
         {% endfor %}
     </tbody>
 </table>
+
+<h4> Existing Appointments </h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th> Appointment Date</th>
+            <th> Appointment Time</th>
+            <th> Doctors name</th>
+            <th> Doctors surname</th>
+            <th> Patient name </th>
+            <th> Patient surname</th>
+            <th> Availability</th>
+            <th> Delete </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for app in appointments %}
+        <tr>
+            <td> {{ app.app_date }} </td>
+            <td> {{ app.app_time }} </td>
+            {% if app.doctorstable %}
+            <td>{{ app.doctorstable.user.profile.name }}</td>
+            <td>{{ app.doctorstable.user.profile.surname }}</td>
+            {% else %}
+            <td>N/A</td>
+            <td>N/A</td>
+            {% endif %}
+            {% if app.patient_id %}
+            <td>{{ app.profile.name }}</td>
+            <td>{{ app.profile.surname }}</td>
+            {% else %}
+            <td>N/A</td>
+            <td>N/A</td>
+            {% endif %}
+            <td>{{ "Available" if app.availability else "Booked" }}</td>
+            <td> <a href="{{ url_for('pages.delete_app', app_id=app.app_id) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a> </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% else %}
 <p>You do not have permission to access the Admin Panel.</p>
 {% endif %}

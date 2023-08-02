@@ -1,9 +1,9 @@
 from flask import render_template, Blueprint, request, flash, abort, redirect, url_for
-from ..db.forms import ContactForm, EditProfile, AddSpecialization, EditUser
+from ..db.forms import ContactForm, EditProfile, AddSpecialization, EditUser, BookApp
 from flask_login import login_required, current_user
 from .mail import mail
 from flask_mail import Message
-from ..db.models import Profile, Specializations, DoctorsTable, Appointment, User
+from ..db.models import Profile, Specializations, Appointment, User, DoctorsTable
 from ..db.db import db
 from datetime import datetime
 
@@ -30,14 +30,6 @@ def home():
 @pages.route("/appointment", methods=["GET", "POST"])
 @login_required
 def appointment():
-    # if request.method == "GET":
-    #     specs = Specializations.query.all()
-    #     return render_template("appointment.html", specs=specs)
-    # elif request.method == "POST":
-    #     specs_id = Specializations.query.filter_by(specialization=request.form["specs"]).first()
-    #     doctors = DoctorsTable.query.filter_by(specializations=specs_id).all()
-    # return render_template("appointment.html", specs=Specializations.query.all(), doctors=doctors)
-
     appointment = Appointment.query.filter_by(availability=True).all()
     return render_template("appointment.html", appointment=appointment)
 
@@ -45,7 +37,13 @@ def appointment():
 @pages.route("/app_details/<int:app_id>", methods=["GET", "POST"])
 @login_required
 def app_details(app_id: int):  # for patient to book
-    appointments = Appointment.query.filter_by(app_id=app_id).all()
+    appointment = Appointment.query.filter_by(app_id=app_id).first()
+    form = BookApp()
+
+    if not appointment:
+        flash("Appointment not found.", "danger")
+        return redirect(url_for("pages.appointment"))
+
     if request.method == "POST":
         if appointment.availability:
             appointment.availability = False
@@ -54,9 +52,9 @@ def app_details(app_id: int):  # for patient to book
             flash("Appointment booked successfully!", "success")
             return redirect(url_for("pages.app_details", app_id=app_id))
         else:
-            flash("This appintment is no longer available.")
+            flash("This appointment is no longer available.")
 
-    return render_template('app_details.html', appointments=appointments)
+    return render_template('app_details.html', appointment=appointment, form=form)
 
 
 @pages.route("/create_app", methods=["GET", "POST"])
@@ -84,12 +82,20 @@ def create_app():  # for doctors to create
 @login_required
 def profile(_id: int):
     if request.method == "GET":
+        user = User.query.get_or_404(_id)
         profile_data = Profile.query.filter_by(userid=_id).first()
+
         if not profile_data:
             abort(404)
-        else:
-            return render_template("profile.html", profile_data=profile_data)
+        
+        if user.isPatient:
+            booked_app = Appointment.query.filter_by(patient_id=_id).all()
+        
+        if user.isDoctor:
+            appointment = Appointment.query.filter_by(doctor_id=_id).all()
 
+        return render_template("profile.html", profile_data=profile_data, booked_app=booked_app, appointment=appointment)
+    
 
 @pages.route("/edit_profile/<int:_id>", methods=["GET", "POST"])
 @login_required
@@ -157,20 +163,28 @@ def delete_user(_id: int):
 @login_required
 def edit_user(_id: int):
     user = User.query.get_or_404(_id)
+    profile = Profile.query.get_or_404(_id)
     form = EditUser(obj=user)
+    form.specialization.choices = [(spec._id, spec.specialization) for spec in Specializations.query.all()]
 
     if request.method == "POST" and form.validate_on_submit():
-        user.email = form.email.data
-        user.isAdmin = form.isAdmin.data
-        user.isDoctor = form.isDoctor.data
-        user.isPatient = form.isPatient.data
-        user.isActive = form.isActive.data
-  
+        form.populate_obj(user)
+        
+        # Creates new row in DoctorsTable is user isDoctor=True and if the row does not exists 
+        if form.isDoctor.data and not DoctorsTable.query.filter_by(userid=user._id).first():   
+            new_doctor = DoctorsTable(userid=user._id, profile_id=profile._id, specs_id=form.specialization.data)
+            db.session.add(new_doctor)
+        
+        if user.isDoctor:
+            specialization_id = form.specialization.data
+            specialization = Specializations.query.get(specialization_id)
+            user.specialization = specialization
+        
         db.session.commit()
         flash("User data has been updated", "success")
-        return redirect(url_for("pages.ava_users", _id=_id))
+        return redirect(url_for("pages.ava_users", _id=user._id))
 
-    return render_template("edit_user.html", form=form, user=user)
+    return render_template("edit_user.html", form=form, user=user, profile=profile)
 
 
 @pages.route("/adminpanel/ava_users", methods=["GET"])
@@ -202,7 +216,8 @@ def content():
             return redirect(url_for("pages.content"))
 
     specializations = Specializations.query.all()
-    return render_template("content.html", form=form, specializations=specializations)
+    appointments = Appointment.query.all()
+    return render_template("content.html", form=form, specializations=specializations, appointments=appointments)
 
 
 @pages.route("/adminpanel/content/delete_spec/<int:spec_id>")
@@ -223,3 +238,12 @@ def analytics():
     doctors_count = User.query.filter_by(isDoctor=True).count()
     appointments_count = Appointment.query.count()
     return render_template("analytics.html", total_users=total_users, doctors_count=doctors_count, appointments_count=appointments_count)
+
+
+@pages.route("/deleteapp/<int:app_id>")
+@login_required
+def delete_app(app_id):
+    appointment = Appointment.query.get_or_404(app_id)
+    db.session.delete(appointment)
+    db.session.commit()
+    return redirect(request.referrer) #redirects to current page

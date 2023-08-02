@@ -28,6 +28,12 @@
         {{ form.isActive.label }} {{ form.isActive(class="form-check-input") }}
     </div>
     <br>
+    {% if form.isDoctor.data %}
+    <div class="form-group">
+        {{ form.specialization.label }} {{ form.specialization(class="form-control") }}
+    </div>
+    {% endif %}
+
     <input type="submit" value="Update" class="btn btn-primary">
 </form>
 {% endblock %}

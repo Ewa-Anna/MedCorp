@@ -60,8 +60,8 @@ class Appointment(db.Model):
     app_date = db.Column(db.Text, nullable=False)
     app_time = db.Column(db.Text, nullable=False)
     availability = db.Column(db.Boolean, nullable=False, default=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey("profile._id"), unique=True)
-    doctor_id = db.Column(db.Integer, db.ForeignKey("doctorstable._id"), nullable=False, unique=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey("profile._id"))
+    doctor_id = db.Column(db.Integer, db.ForeignKey("doctorstable._id"), nullable=False)
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
     
@@ -72,10 +72,12 @@ class DoctorsTable(db.Model):
     __tablename__ = 'doctorstable'
 
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    specs_id = db.Column(db.Integer, db.ForeignKey("specializations._id"), nullable=False, unique=True)
+    specs_id = db.Column(db.Integer, db.ForeignKey("specializations._id"))
     userid = db.Column(db.Integer, db.ForeignKey("user._id"), nullable=False, unique=True)
-
+    profile_id = db.Column(db.Integer, db.ForeignKey("profile._id"), nullable=True)
+    
     user = db.relationship("User", uselist=False, cascade="delete")
+    profile = db.relationship("Profile", uselist=False, cascade="delete")
     specializations = db.relationship("Specializations", uselist=False, cascade="delete")
 
 class Specializations(db.Model):

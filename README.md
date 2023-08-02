@@ -22,5 +22,4 @@ This is a website for doctor's appointment registration for fictional medical co
 <code> flask --app app run </code>
 <br>
 <br>
-<h2> Project structure overview </h2>
-<img src="library\static\svg\tree.png" alt="tree_directory">
+<h2> Project overview </h2>

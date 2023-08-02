@@ -5,23 +5,40 @@
 {% endblock %}
 
 {% block main_content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-primary" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
 <div class="appointment_container">
-    <h2>Appointment Details</h2>
-    <dl>
-      <dt>Date</dt>
-      <dd>{{ appointment.app_date }}</dd>
-      <dt>Time</dt>
-      <dd>{{ appointment.app_time }}</dd>
-      <dt>Availability</dt>
-      <dd>{{ "Available" if appointment.availability else "Booked" }}</dd>
-    </dl>
+  <h2>Appointment Details</h2>
+  <dl>
+    <dt>Date</dt>
+    <dd>{{ appointment.app_date }}</dd>
+    <dt>Time</dt>
+    <dd>{{ appointment.app_time }}</dd>
+    {% if appointment.doctorstable and appointment.doctorstable.user.profile %}
+    <dt>Specialization</dt>
+    <dd>{{ appointment.doctorstable.specializations.specialization }}</dd>
+    <dt> Doctor </dt>
+    <dd>{{ appointment.doctorstable.user.profile.name }} {{ appointment.doctorstable.user.profile.surname }}</dd>
+    {% else %}
+    <dt>Doctor information not available</dt>
+    {% endif %}
+  </dl>
   {% if appointment.availability %}
-    <form method="post" action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}">
-      {{ form.hidden_tag() }}
-      <button type="submit" class="btn btn-primary">Book Appointment</button>
-    </form>
+  <form method="post" action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}">
+    {{ form.hidden_tag() }}
+    <button type="submit" class="btn btn-primary">Book Appointment</button>
+  </form>
   {% else %}
-    <p>This appointment is no longer available.</p>
+  <p>This appointment is no longer available.</p>
   {% endif %}
 
 </div>

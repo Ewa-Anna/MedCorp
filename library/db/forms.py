@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, DateField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, DateField, SelectField
 from wtforms.validators import InputRequired, Email, \
     Length, EqualTo, DataRequired
 from wtforms.widgets import TextArea
@@ -75,4 +75,9 @@ class EditUser(FlaskForm):
     isDoctor = BooleanField("Doctor")
     isPatient = BooleanField("Patient")
     isActive = BooleanField("Active")
+    specialization = SelectField("Specialization")
     submit = SubmitField("Edit")
+
+
+class BookApp(FlaskForm):
+    submit = SubmitField("Book")
