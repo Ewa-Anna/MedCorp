@@ -12,40 +12,21 @@
 
 {% else %}
 
-<!-- <div class="appointment_container">
-<form action="{{ url_for('pages.appointment', app_id=_id)}}" method="post">
-    <select name="specs" id="specs" class="form-select" aria-label="Default select example">
-        <option selected> Please select specialization</option>
+<div class="appointment_container">
+    <form action="{{ url_for('pages.appointment', app_id=_id)}}" method="post">
+        <select name="specs" id="specs" class="form-select" aria-label="Default select example">
+            <option selected> Please select specialization</option>
             {% for spec in specs %}
-                <option value="{{ spec.specialization }}" class="dropdown-item">
-                    {{ spec.specialization }}
-                </option>
-            {% endfor %}
-    </select>
-    <br>
-    <br>
-    <input class="btn btn-primary" type="submit" value="Submit">
-    <br>
-    <br>
-    {% if doctors %}
-    <p> Available doctors: </p>
-        {% for doc in doctors %}
-            <option class="dropdown-item">
-                {{ doc.name }} 
-                {{ doc.surname }}
+            <option value="{{ spec.specialization }}" class="dropdown-item">
+                {{ spec.specialization }}
             </option>
-        {% endfor %}
-    {% else %}
-        {% if request.method == "POST" %}
-        <p>Currently, there are no available doctors.</p>
-        {% endif %}
-    {% endif %} 
-</form>
+            {% endfor %}
+        </select>
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </form>
 </div>
--->
-
-<h3> Available Appointments: </h3>
 {% if appointment %}
+<h3> Available Appointments for {{ selected_specialization }}: </h3>
 <table class="table">
     <thead>
         <tr>
@@ -69,7 +50,9 @@
     </tbody>
 </table>
 {% else %}
-<p>No empty appointment slots available at the moment.</p>
+{% if request.method == "POST" %}
+<p>Currently, there are no available appointments.</p>
+{% endif %}
 {% endif %}
 {% endif %}
 {% endblock %}

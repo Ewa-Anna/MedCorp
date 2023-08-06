@@ -1,9 +1,12 @@
 from flask import render_template, Blueprint, request, session, flash, redirect, url_for
+from flask_login import login_user, login_required, logout_user, current_user
+
 from werkzeug.security import generate_password_hash, check_password_hash
-from ..db.forms import LoginForm, RegisterForm
+
+from ..db.forms import LoginForm, RegisterForm, ChangePassword
 from ..db.models import User, Profile
-from flask_login import login_user, login_required, logout_user
 from ..db.db import db
+
 from ..valid import isProperMail
 
 authorize = Blueprint(
@@ -80,6 +83,34 @@ def register_post():
     db.session.commit()
 
     return redirect(url_for(".login"))
+
+
+@authorize.route("/change_password", methods=["GET","POST"])
+@login_required
+def change_password():
+    form = ChangePassword()
+
+    if request.method == "POST":
+        user = current_user
+        old_password = form.old_password.data
+        new_password = form.new_password.data
+        confirm_password = form.confirm_password.data
+
+        if not check_password_hash(user.password, old_password):
+            flash("Incorrect old password.", "danger")
+            return render_template("change_password.html", form=form)
+        
+        if new_password == confirm_password:
+            user.password = generate_password_hash(new_password, method='sha256')
+            db.session.commit()
+            flash("Password changed successfully", "success")
+            return redirect(url_for("pages.profile"))
+        
+        else:
+            flash("Passwords do not match", "danger")
+            return render_template("change_password.html", form=form)
+    
+    return render_template("change_password.html", form=form)
 
 
 @authorize.route("/logout")

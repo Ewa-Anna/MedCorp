@@ -18,11 +18,12 @@ app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
 
 load_dotenv()
-EMAIL = os.getenv("EMAIL")
-PASSWORD = os.getenv("PASSWORD")
+EMAIL = os.environ.get("EMAIL")
+PASSWORD = os.environ.get("PASSWORD")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config.from_object(Config)
+
 migrate = Migrate(app, db)
 
 db.init_app(app)

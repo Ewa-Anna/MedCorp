@@ -1,11 +1,16 @@
 from flask import render_template, Blueprint, request, flash, abort, redirect, url_for
-from ..db.forms import ContactForm, EditProfile, AddSpecialization, EditUser, BookApp
 from flask_login import login_required, current_user
-from .mail import mail
 from flask_mail import Message
+
+from werkzeug.security import generate_password_hash
+
+from ..db.forms import ContactForm, EditProfile, AddSpecialization, EditUser, BookApp, CreateNewUser
 from ..db.models import Profile, Specializations, Appointment, User, DoctorsTable
 from ..db.db import db
-from datetime import datetime
+
+from ..valid import isProperMail
+
+from .mail import mail
 
 import os
 from dotenv import load_dotenv
@@ -30,8 +35,23 @@ def home():
 @pages.route("/appointment", methods=["GET", "POST"])
 @login_required
 def appointment():
-    appointment = Appointment.query.filter_by(availability=True).all()
-    return render_template("appointment.html", appointment=appointment)
+    if request.method == "GET":
+        specs = Specializations.query.all()
+        return render_template("appointment.html", specs=specs)
+    
+    elif request.method == "POST":
+        selected_specialization = request.form.get("specs")
+        specs_id = Specializations.query.filter_by(specialization=selected_specialization).first()
+
+        if specs_id:
+            appointments = Appointment.query.join(DoctorsTable).filter(
+                DoctorsTable.specs_id == specs_id._id,
+                Appointment.availability == True
+            ).all()
+        else:
+            appointments = []
+
+        return render_template("appointment.html", specs=Specializations.query.all(), appointment=appointments, selected_specialization=selected_specialization)
 
 
 @pages.route("/app_details/<int:app_id>", methods=["GET", "POST"])
@@ -87,15 +107,17 @@ def profile(_id: int):
 
         if not profile_data:
             abort(404)
-        
+
+        booked_app = []
         if user.isPatient:
             booked_app = Appointment.query.filter_by(patient_id=_id).all()
-        
+
+        appointment = []
         if user.isDoctor:
             appointment = Appointment.query.filter_by(doctor_id=_id).all()
 
         return render_template("profile.html", profile_data=profile_data, booked_app=booked_app, appointment=appointment)
-    
+
 
 @pages.route("/edit_profile/<int:_id>", methods=["GET", "POST"])
 @login_required
@@ -133,7 +155,7 @@ def contact():
             %s
             """ % (form.name.data, form.email.data, form.body.data)
             mail.send(msg)
-            return "E-mail sent"
+            return render_template("contact.html", success=True)
     elif request.method == "GET":
         return render_template("contact.html", form=form)
 
@@ -149,7 +171,7 @@ def admin_panel():
 def delete_user(_id: int):
     user = User.query.get_or_404(_id)
     profile = Profile.query.filter_by(userid=_id).first()
-    
+
     if profile:
         db.session.delete(profile)
 
@@ -165,21 +187,23 @@ def edit_user(_id: int):
     user = User.query.get_or_404(_id)
     profile = Profile.query.get_or_404(_id)
     form = EditUser(obj=user)
-    form.specialization.choices = [(spec._id, spec.specialization) for spec in Specializations.query.all()]
+    form.specialization.choices = [
+        (spec._id, spec.specialization) for spec in Specializations.query.all()]
 
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(user)
-        
-        # Creates new row in DoctorsTable is user isDoctor=True and if the row does not exists 
-        if form.isDoctor.data and not DoctorsTable.query.filter_by(userid=user._id).first():   
-            new_doctor = DoctorsTable(userid=user._id, profile_id=profile._id, specs_id=form.specialization.data)
+
+        # Creates new row in DoctorsTable if user isDoctor=True and if the row does not exists
+        if form.isDoctor.data and not DoctorsTable.query.filter_by(userid=user._id).first():
+            new_doctor = DoctorsTable(
+                userid=user._id, profile_id=profile._id, specs_id=form.specialization.data)
             db.session.add(new_doctor)
-        
+
         if user.isDoctor:
             specialization_id = form.specialization.data
             specialization = Specializations.query.get(specialization_id)
             user.specialization = specialization
-        
+
         db.session.commit()
         flash("User data has been updated", "success")
         return redirect(url_for("pages.ava_users", _id=user._id))
@@ -192,6 +216,53 @@ def edit_user(_id: int):
 def ava_users():
     users = User.query.all()
     return render_template("ava_users.html", users=users)
+
+
+@pages.route("/adminpanel/add_user", methods=["GET", "POST"])
+@login_required
+def add_user():
+    form = CreateNewUser()
+
+    if request.method == "POST": 
+        email = form.email.data
+        password = form.password.data
+        confirm_password = form.confirm_password.data
+        isAdmin = form.isAdmin.data
+        isDoctor = form.isDoctor.data
+        isPatient = form.isPatient.data
+        isActive = form.isActive.data
+
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            flash("User already exists.")
+            return redirect(url_for("pages.adminpanel"))
+
+        if not isProperMail(email):
+            flash("Please provide correct email address.")
+            return redirect(url_for("pages.add_user"))
+
+        if password != confirm_password:
+            flash("Passwords are not matching.")
+            return render_template("add_user.html")
+
+        new_user = User(email=email,
+                        password=generate_password_hash(
+                            password, method='sha256'),
+                        isAdmin=isAdmin,
+                        isDoctor=isDoctor,
+                        isPatient=isPatient,
+                        isActive=isActive)
+
+        profile = Profile(user=new_user, email=email)
+
+        db.session.add(new_user)
+        db.session.add(profile)
+        db.session.commit()
+
+        flash("New user created successfully!", "success")
+        return redirect(url_for("pages.ava_users"))
+    return render_template("add_user.html", form=form)
 
 
 @pages.route("/adminpanel/content", methods=["GET", "POST"])
@@ -246,4 +317,4 @@ def delete_app(app_id):
     appointment = Appointment.query.get_or_404(app_id)
     db.session.delete(appointment)
     db.session.commit()
-    return redirect(request.referrer) #redirects to current page
+    return redirect(request.referrer)  # redirects to current page

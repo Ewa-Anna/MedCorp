@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block head_content%}
+<title> Admin </title>
+{% endblock %}
+
+{% block main_content %}
+
+<h3> Admin Panel </h3>
+
+{% for message in get_flashed_messages() %}
+<div class="flash"> <svg class="octicon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+        <path fill-rule="evenodd"
+            d="M4.47.22A.75.75 0 015 0h6a.75.75 0 01.53.22l4.25 4.25c.141.14.22.331.22.53v6a.75.75 0 01-.22.53l-4.25 4.25A.75.75 0 0111 16H5a.75.75 0 01-.53-.22L.22 11.53A.75.75 0 010 11V5a.75.75 0 01.22-.53L4.47.22zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5H5.31zM8 4a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 018 4zm0 8a1 1 0 100-2 1 1 0 000 2z">
+        </path>
+    </svg>
+    {{ message }} </div>
+{% endfor %}
+
+{% if current_user.isAdmin %}
+<h4>Create new user</h4>
+<form method="post" action="{{ url_for('pages.add_user')}}">
+   
+    <div class="form-group">
+        {{ form.email.label }} {{ form.email(class="form-control") }}
+    </div>
+    
+    <div class="form-group">
+        {{ form.password.label }} {{ form.password(class="form-control") }}
+    </div>
+    
+    <div class="form-group">
+        {{ form.confirm_password.label }} {{ form.confirm_password(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.isAdmin.label }} {{ form.isAdmin(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.isDoctor.label }} {{ form.isDoctor(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.isPatient.label }} {{ form.isPatient(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.isActive.label }} {{ form.isActive(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary btn-block mb-3") }}
+    </div>
+</form>
+
+
+
+
+
+{% else %}
+<p>You do not have permission to access the Admin Panel.</p>
+{% endif %}
+
+
+
+{% endblock %}

@@ -4,6 +4,9 @@ from wtforms.validators import InputRequired, Email, \
     Length, EqualTo, DataRequired
 from wtforms.widgets import TextArea
 
+
+from datetime import date, timedelta
+
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email()])
     password = PasswordField("Password", validators=[InputRequired()])
@@ -17,7 +20,7 @@ class RegisterForm(FlaskForm):
                              InputRequired(),
                              Length(min=6, max=20,
                                     message="Password must be \
-                                    between 6 and 10 characters long.")])
+                                    between 6 and 20 characters long.")])
     confirm_password = PasswordField("Confirm your password", validators=[
                                      InputRequired(),
                                      EqualTo("password",
@@ -32,14 +35,15 @@ class RestorePassword(FlaskForm):
 
 
 class ChangePassword(FlaskForm):
-    password = PasswordField("Password", validators=[
+    old_password = PasswordField("Old Password", validators=[InputRequired()])
+    new_password = PasswordField("New Password", validators=[
                              InputRequired(),
                              Length(min=6, max=20,
                                     message="Password must be \
                                     between 6 and 20 characters long.")])
     confirm_password = PasswordField("Confirm your password", validators=[
                                      InputRequired(),
-                                     EqualTo("password",
+                                     EqualTo("new_password",
                                              message="Your \
                                              passwords are not matching.")])
     submit = SubmitField("Change password")
@@ -81,3 +85,22 @@ class EditUser(FlaskForm):
 
 class BookApp(FlaskForm):
     submit = SubmitField("Book")
+
+
+class CreateNewUser(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[
+                             InputRequired(),
+                             Length(min=6, max=20,
+                                    message="Password must be \
+                                    between 6 and 20 characters long.")])
+    confirm_password = PasswordField("Confirm your password", validators=[
+                                     InputRequired(),
+                                     EqualTo("password",
+                                             message="Your \
+                                             passwords are not matching.")])
+    isAdmin = BooleanField("Admin")
+    isDoctor = BooleanField("Doctor")
+    isPatient = BooleanField("Patient")
+    isActive = BooleanField("Active")
+    submit = SubmitField("Create User")
