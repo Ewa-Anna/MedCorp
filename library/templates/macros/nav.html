@@ -2,31 +2,44 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="/">Home</a>
-            <a class="nav-item nav-link" href="/about">About</a>
-            <a class="nav-item nav-link" href="/contact">Contact</a>
-            <a class="nav-item nav-link" href="/faq">FAQ</a>
+
+        <div class="col-md-2">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="/">Home</a>
+                <a class="nav-item nav-link" href="/about">About</a>
+                <a class="nav-item nav-link" href="/contact">Contact</a>
+                <a class="nav-item nav-link" href="/faq">FAQ</a>
+            </div>
         </div>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+
+        <div class="col-md-7">
+            <div class="logo-image">
+                <img src="/static/svg/hospital.png" alt="Logo" class="logo" height="70px" width="70px" />
+            </div>
+            <div class="logo-word">
+                <h1 class="brand-name"> MedCorp, Inc. </h1>
+            </div>
+        </div>
+
         <div>
-            {% if session["logged_in"] == True %}
-            <div class="navbar-nav">
-                {% if current_user.isAdmin %}
-                <a class="nav-item nav-link" style="text-align:right;" href="/adminpanel">Admin Panel</a>
+            <div class="col-md-1">
+                {% if session["logged_in"] == True %}
+                <div class="navbar-nav ml-auto">
+                    {% if current_user.isAdmin %}
+                    <a class="nav-item nav-link" style="text-align:right;" href="/adminpanel">Admin Panel</a>
+                    {% endif %}
+                    <a class="nav-item nav-link" style="text-align:right;"
+                        href="/profile/{{ current_user._id }}">Profile</a>
+                    <a class="nav-item nav-link" style="text-align:right;"
+                        href="{{ url_for('authorize.logout') }}">Logout</a>
+                </div>
+                {% else %}
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item nav-link" style="text-align:right;" href="/login">Sign in</a>
+                    <a class="nav-item nav-link" style="text-align:right;" href="/register">Register</a>
+                </div>
                 {% endif %}
-                <a class="nav-item nav-link" style="text-align:right;" href="/profile/{{ current_user._id }}">Profile</a>
-                <a class="nav-item nav-link" style="text-align:right;" href="{{ url_for('authorize.logout') }}">Logout</a>
             </div>
-            {% else %}
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" style="text-align:right;" href="/login">Sign in</a>
-                <a class="nav-item nav-link" style="text-align:right;" href="/register">Register</a>
-            </div>
-            {% endif %}
         </div>
     </div>
 </nav>

@@ -64,9 +64,9 @@
         <tr>
             <td> {{ app.app_date }} </td>
             <td> {{ app.app_time }} </td>
-            {% if app.doctor_id %}
-            <td>{{ app.doctorstable.profile.name }}</td>
-            <td>{{ app.doctorstable.profile.surname }}</td>
+            {% if doctor_profile %}
+            <td>{{ doctor_profile.name }}</td>
+            <td>{{ doctor_profile.surname }}</td>
             {% else %}
             <td>N/A</td>
             <td>N/A</td>

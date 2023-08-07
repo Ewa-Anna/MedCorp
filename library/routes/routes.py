@@ -94,10 +94,15 @@ def app_details(app_id: int):  # for patient to book
 
     if appointment.doctor_id:
         doctor_profile = Profile.query.filter_by(userid=appointment.doctor_id).first()
+        user = User.query.get(appointment.doctor_id)
+        if user:
+            specialization = Specializations.query.get(user.specs_id)
+        else:
+            specialization = None        
     else:
         doctor_profile = None
-
-    return render_template('app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile)
+    
+    return render_template('app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile, specialization=specialization)
 
 
 @pages.route("/create_app", methods=["GET", "POST"])
@@ -295,7 +300,13 @@ def content():
 
     specializations = Specializations.query.all()
     appointments = Appointment.query.all()
-    return render_template("content.html", form=form, specializations=specializations, appointments=appointments)
+    appointment = Appointment.query.first()
+
+    if appointment.doctor_id:
+        doctor_profile = Profile.query.filter_by(userid=appointment.doctor_id).first()
+    else:
+        doctor_profile = None
+    return render_template("content.html", form=form, specializations=specializations, appointments=appointments, doctor_profile=doctor_profile)
 
 
 @pages.route("/adminpanel/content/delete_spec/<int:spec_id>")

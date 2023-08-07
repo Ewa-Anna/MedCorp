@@ -23,22 +23,22 @@
     <dd>{{ appointment.app_date }}</dd>
     <dt>Time</dt>
     <dd>{{ appointment.app_time }}</dd>
+    
     {% if appointment.doctor_id %}
     <dt>Specialization</dt>
-
-    {% if doctor_profile and doctor_profile.specializations %}
-    <dd>{{ doctor_profile.specializations.specialization }}</dd>
+    {% if specialization %}
+    <dd>{{ specialization.specialization }}</dd>
     {% else %}
     <dd>Specialization information not available</dd>
     {% endif %}
-    
+
     <dt>Doctor</dt>
     {% if doctor_profile %}
     <dd>{{ doctor_profile.name }} {{ doctor_profile.surname }}</dd>
     {% else %}
     <dd>Doctor information not available</dd>
     {% endif %}
-    
+
 
   </dl>
   {% if appointment.availability %}
