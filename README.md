@@ -13,13 +13,9 @@ This is a website for doctor's appointment registration for fictional medical co
 <br>
 <code> pip install -r requirements.txt </code>
 <br>
-3. Change directory
+3. Run the code
 <br>
-<code> cd library </code>
-<br>
-4. Run the code
-<br>
-<code> flask --app app run </code>
+<code> flask --debug run </code>
 <br>
 <br>
 <h2> Project overview </h2>

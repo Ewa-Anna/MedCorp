@@ -9,9 +9,9 @@
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <div class="alert alert-primary" role="alert">
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
 </div>
 {% endif %}
 {% endwith %}
@@ -25,12 +25,21 @@
     <dd>{{ appointment.app_time }}</dd>
     {% if appointment.doctor_id %}
     <dt>Specialization</dt>
-    <dd>{{ appointment.doctorstable.specializations.specialization }}</dd>
-    <dt> Doctor </dt>
-    <dd>{{ appointment.doctorstable.profile.name }} {{ appointment.doctorstable.profile.surname }}</dd>
+
+    {% if doctor_profile and doctor_profile.specializations %}
+    <dd>{{ doctor_profile.specializations.specialization }}</dd>
     {% else %}
-    <dt>Doctor information not available</dt>
+    <dd>Specialization information not available</dd>
     {% endif %}
+    
+    <dt>Doctor</dt>
+    {% if doctor_profile %}
+    <dd>{{ doctor_profile.name }} {{ doctor_profile.surname }}</dd>
+    {% else %}
+    <dd>Doctor information not available</dd>
+    {% endif %}
+    
+
   </dl>
   {% if appointment.availability %}
   <form method="post" action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}">
@@ -39,6 +48,7 @@
   </form>
   {% else %}
   <p>This appointment is no longer available.</p>
+  {% endif %}
   {% endif %}
 
 </div>

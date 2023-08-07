@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from .db import db
 from datetime import datetime
 
+
 @dataclass
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
@@ -10,6 +11,7 @@ class User(UserMixin, db.Model):
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    specs_id = db.Column(db.Integer, db.ForeignKey("specializations._id"))
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
     isAdmin = db.Column(db.Boolean, default=False, nullable=False)
@@ -30,6 +32,7 @@ class User(UserMixin, db.Model):
     def get_id(self):
         return self._id
 
+    specializations = db.relationship("Specializations", uselist=False, cascade="delete")
 
 class Profile(db.Model):
     __tablename__ = 'profile'
@@ -61,24 +64,11 @@ class Appointment(db.Model):
     app_time = db.Column(db.Text, nullable=False)
     availability = db.Column(db.Boolean, nullable=False, default=True)
     patient_id = db.Column(db.Integer, db.ForeignKey("profile._id"))
-    doctor_id = db.Column(db.Integer, db.ForeignKey("doctorstable._id"), nullable=False)
+    doctor_id = db.Column(db.Integer)
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
     
-    doctorstable = db.relationship("DoctorsTable", uselist=False, cascade="delete")
     profile = db.relationship("Profile", uselist=False, cascade="delete")
-
-class DoctorsTable(db.Model):
-    __tablename__ = 'doctorstable'
-
-    _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    specs_id = db.Column(db.Integer, db.ForeignKey("specializations._id"))
-    userid = db.Column(db.Integer, db.ForeignKey("user._id"), nullable=False, unique=True)
-    profile_id = db.Column(db.Integer, db.ForeignKey("profile._id"), nullable=True)
-    
-    user = db.relationship("User", uselist=False, cascade="delete")
-    profile = db.relationship("Profile", uselist=False, cascade="delete")
-    specializations = db.relationship("Specializations", uselist=False, cascade="delete")
 
 class Specializations(db.Model):
     __tablename__ = 'specializations'

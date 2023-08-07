@@ -5,7 +5,7 @@ from flask_mail import Message
 from werkzeug.security import generate_password_hash
 
 from ..db.forms import ContactForm, EditProfile, AddSpecialization, EditUser, BookApp, CreateNewUser
-from ..db.models import Profile, Specializations, Appointment, User, DoctorsTable
+from ..db.models import Profile, Specializations, Appointment, User
 from ..db.db import db
 
 from ..valid import isProperMail
@@ -27,8 +27,27 @@ pages = Blueprint(
 )
 
 
-@pages.route("/")
+@pages.route("/", methods=["GET", "POST"])
 def home():
+    if request.method == "GET":
+        booked_app = []
+        appointment = []
+
+        if current_user.is_authenticated:
+            if current_user.isPatient:
+                booked_app = Appointment.query.filter_by(
+                    patient_id=current_user._id).all()
+
+            elif current_user.isDoctor:
+                appointment = Appointment.query.filter_by(
+                    doctor_id=current_user._id).all()
+                
+        doctor_profiles = {}
+        for app in appointment:
+            doctor_profile = Profile.query.filter_by(userid=app.doctor_id).first()
+            doctor_profiles[app.doctor_id] = doctor_profile
+
+        return render_template("home.html", booked_app=booked_app, appointment=appointment, doctor_profiles=doctor_profiles)
     return render_template("home.html")
 
 
@@ -38,16 +57,15 @@ def appointment():
     if request.method == "GET":
         specs = Specializations.query.all()
         return render_template("appointment.html", specs=specs)
-    
+
     elif request.method == "POST":
         selected_specialization = request.form.get("specs")
-        specs_id = Specializations.query.filter_by(specialization=selected_specialization).first()
+        specs_id = Specializations.query.filter_by(
+            specialization=selected_specialization).first()
 
         if specs_id:
-            appointments = Appointment.query.join(DoctorsTable).filter(
-                DoctorsTable.specs_id == specs_id._id,
-                Appointment.availability == True
-            ).all()
+            appointments = Appointment.query.join(User, Appointment.doctor_id == User._id).filter(
+                User.specs_id == specs_id._id, Appointment.availability == True).all()
         else:
             appointments = []
 
@@ -74,7 +92,12 @@ def app_details(app_id: int):  # for patient to book
         else:
             flash("This appointment is no longer available.")
 
-    return render_template('app_details.html', appointment=appointment, form=form)
+    if appointment.doctor_id:
+        doctor_profile = Profile.query.filter_by(userid=appointment.doctor_id).first()
+    else:
+        doctor_profile = None
+
+    return render_template('app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile)
 
 
 @pages.route("/create_app", methods=["GET", "POST"])
@@ -102,21 +125,12 @@ def create_app():  # for doctors to create
 @login_required
 def profile(_id: int):
     if request.method == "GET":
-        user = User.query.get_or_404(_id)
         profile_data = Profile.query.filter_by(userid=_id).first()
 
         if not profile_data:
             abort(404)
 
-        booked_app = []
-        if user.isPatient:
-            booked_app = Appointment.query.filter_by(patient_id=_id).all()
-
-        appointment = []
-        if user.isDoctor:
-            appointment = Appointment.query.filter_by(doctor_id=_id).all()
-
-        return render_template("profile.html", profile_data=profile_data, booked_app=booked_app, appointment=appointment)
+        return render_template("profile.html", profile_data=profile_data)
 
 
 @pages.route("/edit_profile/<int:_id>", methods=["GET", "POST"])
@@ -193,16 +207,9 @@ def edit_user(_id: int):
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(user)
 
-        # Creates new row in DoctorsTable if user isDoctor=True and if the row does not exists
-        if form.isDoctor.data and not DoctorsTable.query.filter_by(userid=user._id).first():
-            new_doctor = DoctorsTable(
-                userid=user._id, profile_id=profile._id, specs_id=form.specialization.data)
-            db.session.add(new_doctor)
-
         if user.isDoctor:
             specialization_id = form.specialization.data
-            specialization = Specializations.query.get(specialization_id)
-            user.specialization = specialization
+            user.specs_id = specialization_id
 
         db.session.commit()
         flash("User data has been updated", "success")
@@ -223,7 +230,7 @@ def ava_users():
 def add_user():
     form = CreateNewUser()
 
-    if request.method == "POST": 
+    if request.method == "POST":
         email = form.email.data
         password = form.password.data
         confirm_password = form.confirm_password.data
