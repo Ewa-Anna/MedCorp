@@ -1,6 +1,8 @@
-from flask import render_template, Blueprint, request, flash, abort, redirect, url_for
+from flask import render_template, Blueprint, request, flash, abort, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from flask_mail import Message
+
+from sqlalchemy import func
 
 from werkzeug.security import generate_password_hash
 
@@ -34,20 +36,41 @@ def home():
         appointment = []
 
         if current_user.is_authenticated:
-            if current_user.isPatient:
+            if current_user.isDoctor:
+                appointment = Appointment.query.filter_by(
+                    doctor_id=current_user._id).all()
+
+            elif current_user.isPatient:
                 booked_app = Appointment.query.filter_by(
                     patient_id=current_user._id).all()
 
-            elif current_user.isDoctor:
-                appointment = Appointment.query.filter_by(
-                    doctor_id=current_user._id).all()
-                
         doctor_profiles = {}
         for app in appointment:
-            doctor_profile = Profile.query.filter_by(userid=app.doctor_id).first()
+            doctor_profile = Profile.query.filter_by(
+                userid=app.doctor_id).first()
             doctor_profiles[app.doctor_id] = doctor_profile
 
+        if current_user.is_authenticated:
+            display = Appointment.query.filter_by(
+                patient_id=current_user._id).all()
+
+            display_doctor = []
+            for appointment in display:
+                if appointment.doctor_id:
+                    doctor_profile = Profile.query.filter_by(
+                        userid=appointment.doctor_id).first()
+                    display_doctor.append(doctor_profile)
+                else:
+                    display_doctor.append(None)
+
+                return render_template("home.html", booked_app=booked_app, appointment=appointment, doctor_profiles=doctor_profiles, doctor_profile=doctor_profile)
+
+        else:
+            display = []
+            display_doctor = []
+
         return render_template("home.html", booked_app=booked_app, appointment=appointment, doctor_profiles=doctor_profiles)
+
     return render_template("home.html")
 
 
@@ -89,19 +112,31 @@ def app_details(app_id: int):  # for patient to book
             db.session.commit()
             flash("Appointment booked successfully!", "success")
             return redirect(url_for("pages.app_details", app_id=app_id))
-        else:
-            flash("This appointment is no longer available.")
+
+        appointment = Appointment.query.get_or_404(app_id)
+
+        if appointment.doctor_id != current_user._id:
+            flash("You are not authorized to submit recommendations.", "danger")
+            return redirect(url_for("pages.app_details", app_id=app_id))
+
+        recommendations = request.form.get("recommendations")
+        appointment.recommendations = recommendations
+        db.session.commit()
+
+        flash("Recommendations submitted successfully!", "success")
+        return redirect(url_for("pages.app_details", app_id=app_id, appointment=appointment))
 
     if appointment.doctor_id:
-        doctor_profile = Profile.query.filter_by(userid=appointment.doctor_id).first()
+        doctor_profile = Profile.query.filter_by(
+            userid=appointment.doctor_id).first()
         user = User.query.get(appointment.doctor_id)
         if user:
             specialization = Specializations.query.get(user.specs_id)
         else:
-            specialization = None        
+            specialization = None
     else:
         doctor_profile = None
-    
+
     return render_template('app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile, specialization=specialization)
 
 
@@ -303,9 +338,24 @@ def content():
     appointment = Appointment.query.first()
 
     if appointment.doctor_id:
-        doctor_profile = Profile.query.filter_by(userid=appointment.doctor_id).first()
+        doctor_profile = Profile.query.filter_by(
+            userid=appointment.doctor_id).first()
     else:
         doctor_profile = None
+
+    display = Appointment.query.filter_by(
+        patient_id=current_user._id).all()
+
+    display_doctor = []
+    for appointment in display:
+        if appointment.doctor_id:
+            doctor_profile = Profile.query.filter_by(
+                userid=appointment.doctor_id).first()
+            display_doctor.append(doctor_profile)
+        else:
+            display_doctor.append(None)
+            return render_template("content.html", doctor_profile=doctor_profile)
+
     return render_template("content.html", form=form, specializations=specializations, appointments=appointments, doctor_profile=doctor_profile)
 
 
@@ -335,4 +385,37 @@ def delete_app(app_id):
     appointment = Appointment.query.get_or_404(app_id)
     db.session.delete(appointment)
     db.session.commit()
+    flash("Appointment deleted successfully.", "success")
     return redirect(request.referrer)  # redirects to current page
+
+
+@pages.route("/deleteapp2/<int:app_id>")
+@login_required
+def delete_app_patient(app_id):
+    appointment = Appointment.query.get_or_404(app_id)
+    if appointment.patient_id == current_user._id:
+        appointment.patient_id = None
+        appointment.availability = True
+        db.session.commit()
+    flash("Appointment deleted successfully.", "success")
+    return redirect(request.referrer)
+
+
+@pages.route("/get_data", methods=["GET"])
+def get_data():
+    app_data = db.session.query(func.count(
+        Appointment.app_id), Appointment.app_time).group_by(Appointment.app_time).all()
+
+    timeslots = []
+    app_count = []
+
+    for app_time, count in app_data:
+        timeslots.append(app_time)
+        app_count.append(count)
+
+    data = {
+        "timeslots": timeslots,
+        "app_count": app_count
+    }
+
+    return jsonify(data)

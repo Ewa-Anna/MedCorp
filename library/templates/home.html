@@ -5,6 +5,17 @@
 {% endblock %}
 
 {% block main_content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-primary" role="alert">
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
 <h3>Welcome to MedCorp! How can we help you?</h3>
 {% if current_user.isDoctor %}
 <h4> For Doctors: </h4>
@@ -22,77 +33,85 @@
 
 {% if current_user.isDoctor %}
 
-<h4>Appointments</h4>
-{% if appointment %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Patient Name</th>
-            <th>Patient Surname</th>
-            <th>Availability</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for app in appointment %}
-        <tr>
-            <td>{{ app.app_date }}</td>
-            <td>{{ app.app_time }}</td>
-            {% if app.patient_id %}
-            <td>{{ app.profile.name }}</td>
-            <td>{{ app.profile.surname }}</td>
-            {% else %}
-            <td>N/A</td>
-            <td>N/A</td>
-            {% endif %}
-            <td>{{ "Available" if app.availability else "Booked" }}</td>
-            <td> <a href="{{ url_for('pages.delete_app', app_id=app.app_id) }}" class="btn btn-danger"><i
-                        class="fas fa-trash-alt"></i></a> </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>You have no appointments yet.</p>
-{% endif %}
+    <h4>Appointments</h4>
+    {% if appointment %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Patient Name</th>
+                <th>Patient Surname</th>
+                <th>Availability</th>
+                <th>Delete</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in appointment %}
+            <tr>
+                <td>{{ app.app_date }}</td>
+                <td>{{ app.app_time }}</td>
+                {% if app.patient_id %}
+                <td>{{ app.profile.name }}</td>
+                <td>{{ app.profile.surname }}</td>
+                {% else %}
+                <td>N/A</td>
+                <td>N/A</td>
+                {% endif %}
+                <td>{{ "Available" if app.availability else "Booked" }}</td>
+                <td> <a href="{{ url_for('pages.delete_app', app_id=app.app_id) }}" class="btn btn-danger"><i
+                            class="fas fa-trash-alt"></i></a> </td>
+                {% if not app.availability %}
+                <td><a href="{{ url_for('pages.app_details', app_id=app.app_id) }}" class="btn btn-primary"><i class="fas fa-info-circle"></i> Details</a>
+                </td>
+                {% endif %}
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no appointments yet.</p>
+    {% endif %}
 
 {% elif current_user.isPatient %}
 
-<h4>Booked Appointments</h4>
-{% if booked_app %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Doctor Name</th>
-            <th>Doctor Surname</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for app in booked_app %}
-        <tr>
-            <td>{{ app.app_date }}</td>
-            <td>{{ app.app_time }}</td>
-            {% if doctor_profile %}
-            <td>{{ doctor_profile.name }}</td>
-            <td>{{ doctor_profile.surname }}</td>
-            {% else %}
-            <td>Doctor information not available</td>
-            <td>Doctor information not available</td>
-            {% endif %}
-            <td> <a href="{{ url_for('pages.delete_app', app_id=app.app_id) }}" class="btn btn-danger"><i
-                        class="fas fa-trash-alt"></i></a> </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>You have not booked any appointments yet.</p>
-{% endif %}
+    <h4>Booked Appointments</h4>
+    {% if booked_app %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Doctor Name</th>
+                <th>Doctor Surname</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in booked_app %}
+            <tr>
+                <td>{{ app.app_date }}</td>
+                <td>{{ app.app_time }}</td>
+                {% if doctor_profile %}
+                <td>{{ doctor_profile.name }}</td>
+                <td>{{ doctor_profile.surname }}</td>
+                {% else %}
+                <td>Doctor information not available</td>
+                <td>Doctor information not available</td>
+                {% endif %}
+                <td><a href="{{ url_for('pages.app_details', app_id=app.app_id) }}" class="btn btn-primary"><i class="fas fa-info-circle"></i> Details</a>
+                </td>
+                <td> <a href="{{ url_for('pages.delete_app_patient', app_id=app.app_id) }}" class="btn btn-danger"><i
+                            class="fas fa-trash-alt"></i></a> </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have not booked any appointments yet.</p>
+    {% endif %}
 
 {% else %}
 

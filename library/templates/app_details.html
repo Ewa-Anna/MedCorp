@@ -18,12 +18,52 @@
 
 <div class="appointment_container">
   <h2>Appointment Details</h2>
+  {% if current_user.isDoctor %}
+
   <dl>
     <dt>Date</dt>
     <dd>{{ appointment.app_date }}</dd>
     <dt>Time</dt>
     <dd>{{ appointment.app_time }}</dd>
-    
+
+    <dt>Patient</dt>
+    {% if appointment.patient_id %}
+    <td>{{ appointment.profile.name }}</td>
+    <td>{{ appointment.profile.surname }}</td>
+    {% else %}
+    <dd>Patient information not available</dd>
+    {% endif %}
+  </dl>
+
+  <div class="container">
+    <section class="mt-4" style="text-align: center;">
+      <h4>Recommendations</h4>
+      {% if appointment.recommendations %}
+      <div class="recommendations">
+        <p>{{ appointment.recommendations }}</p>
+      </div>
+      {% else %}
+      <form action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}" method="post">
+        <div class="form-group">
+          <label for="recommendations">Add Recommendations:</label>
+          <textarea class="form-control" id="recommendations" name="recommendations" rows="4"
+            style="width: 50%; margin: 0 auto;"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </section>
+    {% endif%}
+  </div>
+
+
+  {% else %}
+
+  <dl>
+    <dt>Date</dt>
+    <dd>{{ appointment.app_date }}</dd>
+    <dt>Time</dt>
+    <dd>{{ appointment.app_time }}</dd>
+
     {% if appointment.doctor_id %}
     <dt>Specialization</dt>
     {% if specialization %}
@@ -39,6 +79,17 @@
     <dd>Doctor information not available</dd>
     {% endif %}
 
+    {% if not appointment.availability %}
+
+    <h4>Recommendations</h4>
+    {% if appointment.recommendations %}
+    <div class="recommendations">
+      <p>{{ appointment.recommendations }}</p>
+    </div>
+    {% else %}
+    <p> Currently, there are no recommendations available.</p>
+    {% endif %}
+    {% endif %}
 
   </dl>
   {% if appointment.availability %}
@@ -46,8 +97,7 @@
     {{ form.hidden_tag() }}
     <button type="submit" class="btn btn-primary">Book Appointment</button>
   </form>
-  {% else %}
-  <p>This appointment is no longer available.</p>
+  {% endif %}
   {% endif %}
   {% endif %}
 

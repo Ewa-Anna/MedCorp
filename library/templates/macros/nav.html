@@ -5,38 +5,45 @@
 
         <div class="col-md-2">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="/">Home</a>
-                <a class="nav-item nav-link" href="/about">About</a>
-                <a class="nav-item nav-link" href="/contact">Contact</a>
-                <a class="nav-item nav-link" href="/faq">FAQ</a>
+                <a class="nav-item nav-link {% if request.endpoint == 'pages.home' %}active{% endif %}"
+                    href="/">Home</a>
+                <a class="nav-item nav-link {% if request.endpoint == 'pages.about' %}active{% endif %}"
+                    href="/about">About</a>
+                <a class="nav-item nav-link {% if request.endpoint == 'pages.contact' %}active{% endif %}"
+                    href="/contact">Contact</a>
             </div>
         </div>
 
-        <div class="col-md-7">
-            <div class="logo-image">
-                <img src="/static/svg/hospital.png" alt="Logo" class="logo" height="70px" width="70px" />
+        <a href="/" class="col-md-7" id="nav-logo">
+            <div class="col-md-7">
+                <div class="logo-image">
+                    <img src="/static/svg/hospital.png" alt="Logo" class="logo" height="70px" width="70px" />
+                </div>
+                <div class="logo-word">
+                    <h1 class="brand-name"> MedCorp, Inc. </h1>
+                </div>
             </div>
-            <div class="logo-word">
-                <h1 class="brand-name"> MedCorp, Inc. </h1>
-            </div>
-        </div>
+        </a>
 
         <div>
             <div class="col-md-1">
                 {% if session["logged_in"] == True %}
                 <div class="navbar-nav ml-auto">
                     {% if current_user.isAdmin %}
-                    <a class="nav-item nav-link" style="text-align:right;" href="/adminpanel">Admin Panel</a>
+                    <a class="nav-item nav-link {% if request.endpoint == 'pages.admin_panel' %}active{% endif %}"
+                        style="text-align:right;" href="/adminpanel">Admin Panel</a>
                     {% endif %}
-                    <a class="nav-item nav-link" style="text-align:right;"
-                        href="/profile/{{ current_user._id }}">Profile</a>
+                    <a class="nav-item nav-link {% if request.endpoint == 'pages.profile' %}active{% endif %}"
+                        style="text-align:right;" href="/profile/{{ current_user._id }}">Profile</a>
                     <a class="nav-item nav-link" style="text-align:right;"
                         href="{{ url_for('authorize.logout') }}">Logout</a>
                 </div>
                 {% else %}
-                <div class="navbar-nav ml-auto">
-                    <a class="nav-item nav-link" style="text-align:right;" href="/login">Sign in</a>
-                    <a class="nav-item nav-link" style="text-align:right;" href="/register">Register</a>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link {% if request.endpoint == 'authorize.login' %}active{% endif %}"
+                        style="text-align:right;" href="/login">Sign in</a>
+                    <a class="nav-item nav-link {% if request.endpoint == 'authorize.register' %}active{% endif %}"
+                        style="text-align:right;" href="/register">Register</a>
                 </div>
                 {% endif %}
             </div>

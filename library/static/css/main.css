@@ -17,6 +17,10 @@
     display:flex;
 }
 
+#nav-logo:hover {
+    text-decoration: none;
+}
+
 .navbar-nav {
     display: inline;
 }
@@ -32,7 +36,6 @@ li {
     line-height: 1.5;
     color: #cfdae4;
     text-align: center;
-    
 }
 
 .header-login {

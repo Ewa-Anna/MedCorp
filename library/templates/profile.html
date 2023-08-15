@@ -15,9 +15,9 @@
 <p> Birthdate: {{ profile_data.get_birthdate() }} </p>
 <p> Email: {{ profile_data.email }} </p>
 <p> Telephone: {{ profile_data.telephone }} </p>
-<a href="{{ url_for('pages.edit_profile', _id=profile_data._id) }}">Edit Profile</a>
 <br>
-<a href="{{ url_for('authorize.change_password' )}}">Change Password</a>
+<a href="{{ url_for('pages.edit_profile', _id=profile_data._id) }}" class="btn btn-primary">Edit Profile</a>
+<a href="{{ url_for('authorize.change_password' )}}" class="btn btn-primary">Change Password</a>
 
 {% else %}
 <h3> User not found </h3>

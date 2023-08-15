@@ -67,8 +67,9 @@ class Appointment(db.Model):
     doctor_id = db.Column(db.Integer)
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
+    recommendations = db.Column(db.Text)
     
-    profile = db.relationship("Profile", uselist=False, cascade="delete")
+    profile = db.relationship("Profile", uselist=False)
 
 class Specializations(db.Model):
     __tablename__ = 'specializations'
