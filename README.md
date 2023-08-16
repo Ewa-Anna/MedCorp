@@ -1,10 +1,10 @@
 <h1> MedCorp </h1>
 
 This is a website for doctor's appointment registration for fictional medical company.
+<br>
 <b>Work still in progress.</b>
 <br>
 <h2> How to install and run the project? </h2>
-<br>
 1. Clone the repository
 <br>
 <code> git clone https://github.com/Ewa-Anna/MedCorp </code>

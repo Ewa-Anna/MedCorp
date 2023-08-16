@@ -7,7 +7,9 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 
 from .routes.routes import pages
+from .routes.doctor import doctor
 from .routes.auth import authorize
+from .routes.admin import admin
 from .routes.mail import mail
 
 from .db.models import User
@@ -42,6 +44,8 @@ mail.init_app(app)
 
 app.register_blueprint(pages)
 app.register_blueprint(authorize)
+app.register_blueprint(doctor)
+app.register_blueprint(admin)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

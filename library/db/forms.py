@@ -104,3 +104,8 @@ class CreateNewUser(FlaskForm):
     isPatient = BooleanField("Patient")
     isActive = BooleanField("Active")
     submit = SubmitField("Create User")
+
+
+class EditRecommendation(FlaskForm):
+    recommendations = StringField("Enter new recommendation...")
+    submit = SubmitField("Update")

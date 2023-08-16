@@ -19,7 +19,7 @@ authorize = Blueprint(
 @authorize.route("/login", methods=["GET"])
 def login():
     form = LoginForm()
-    return render_template("login.html", form=form)
+    return render_template("auth/login.html", form=form)
 
 
 @authorize.route("/login", methods=["POST"])
@@ -43,7 +43,7 @@ def login_post():
 @authorize.route("/register", methods=["GET"])
 def register():
     form = RegisterForm()
-    return render_template("register.html", form=form)
+    return render_template("auth/register.html", form=form)
 
 
 @authorize.route("/register", methods=["POST"])
@@ -68,7 +68,7 @@ def register_post():
 
     if password != confirm_password:
         flash("Passwords are not matching.")
-        return render_template("register.html")
+        return render_template("auth/register.html")
 
     new_user = User(email=email,
                     password=generate_password_hash(password, method='sha256'),
@@ -98,7 +98,7 @@ def change_password():
 
         if not check_password_hash(user.password, old_password):
             flash("Incorrect old password.", "danger")
-            return render_template("change_password.html", form=form)
+            return render_template("auth/change_password.html", form=form)
         
         if new_password == confirm_password:
             user.password = generate_password_hash(new_password, method='sha256')
@@ -108,9 +108,9 @@ def change_password():
         
         else:
             flash("Passwords do not match", "danger")
-            return render_template("change_password.html", form=form)
+            return render_template("auth/change_password.html", form=form)
     
-    return render_template("change_password.html", form=form)
+    return render_template("auth/change_password.html", form=form)
 
 
 @authorize.route("/logout")

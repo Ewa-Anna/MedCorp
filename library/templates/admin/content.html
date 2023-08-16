@@ -38,7 +38,7 @@
         {% for spec in specializations %}
         <tr>
             <td> {{ spec.specialization }} </td>
-            <td> <a href="{{ url_for('pages.delete_spec', spec_id=spec._id) }}" class="btn btn-danger"><i
+            <td> <a href="{{ url_for('admin.delete_spec', spec_id=spec._id) }}" class="btn btn-danger"><i
                         class="fas fa-trash-alt"></i></a> </td>
         </tr>
         {% endfor %}

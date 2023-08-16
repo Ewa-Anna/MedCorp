@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block head_content %}
+
+{% endblock %}
+
+{% block main_content %}
+
+<h4> Edit Recommendation </h4>
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label>Edit Recommendation:</label>
+      <textarea class="form-control">{{ appointment.recommendations }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+{% endblock %}

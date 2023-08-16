@@ -9,7 +9,7 @@
 
 <h3> Doctors, please create empty appointment slots </h3>
 
-<form method="post" action="{{ url_for('pages.create_app') }}">  
+<form method="post" action="{{ url_for('doctor.create_app') }}">  
     <label for="selected_date">Appointment Date:</label>
     <input type="date" id="selected_date" name="selected_date" required>
     <br>
@@ -28,5 +28,5 @@
 </div>
 {% endif %}
 {% endwith %}
-
+<script type="text/javascript" src="{{ url_for('static', filename='js/date_of_appointment.js') }}"></script>
 {% endblock %}

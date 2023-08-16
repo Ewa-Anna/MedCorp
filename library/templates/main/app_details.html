@@ -39,18 +39,27 @@
     <section class="mt-4" style="text-align: center;">
       <h4>Recommendations</h4>
       {% if appointment.recommendations %}
-      <div class="recommendations">
+      <div>
         <p>{{ appointment.recommendations }}</p>
-      </div>
-      {% else %}
-      <form action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}" method="post">
-        <div class="form-group">
-          <label for="recommendations">Add Recommendations:</label>
-          <textarea class="form-control" id="recommendations" name="recommendations" rows="4"
-            style="width: 50%; margin: 0 auto;"></textarea>
+        <div class="row">
+          <div class="col-md-12">
+            <form action="{{ url_for('doctor.edit_recommendation', app_id=appointment.app_id) }}" method="post">
+              <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+            <form action="{{ url_for('doctor.delete_recommendations', app_id=appointment.app_id) }}" method="post">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+        {% else %}
+        <form action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}" method="post">
+          <div class="form-group">
+            <label for="recommendations">Add Recommendations:</label>
+            <textarea class="form-control" id="recommendations" name="recommendations" rows="4"
+              style="width: 50%; margin: 0 auto;"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </section>
     {% endif%}
   </div>
@@ -78,20 +87,24 @@
     {% else %}
     <dd>Doctor information not available</dd>
     {% endif %}
-
-    {% if not appointment.availability %}
-
-    <h4>Recommendations</h4>
-    {% if appointment.recommendations %}
-    <div class="recommendations">
-      <p>{{ appointment.recommendations }}</p>
-    </div>
-    {% else %}
-    <p> Currently, there are no recommendations available.</p>
-    {% endif %}
-    {% endif %}
-
   </dl>
+  {% if not appointment.availability %}
+
+  <div class="container">
+    <section class="mt-4" style="text-align: center;">
+      <h4>Recommendations</h4>
+      {% if appointment.recommendations %}
+      <div class="recommendations">
+        <p>{{ appointment.recommendations }}</p>
+      </div>
+      {% else %}
+      <p> Currently, there are no recommendations available.</p>
+      {% endif %}
+    </section>
+  </div>
+  {% endif %}
+
+
   {% if appointment.availability %}
   <form method="post" action="{{ url_for('pages.app_details', app_id=appointment.app_id) }}">
     {{ form.hidden_tag() }}

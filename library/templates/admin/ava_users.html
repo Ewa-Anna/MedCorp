@@ -20,7 +20,7 @@
 {% if current_user.isAdmin %}
 
 <h4>Add new user:</h4>
-<a href="{{ url_for('pages.add_user') }}" class="btn btn-primary bg-success"><i class="fas fa-user-plus"></i></a>
+<a href="{{ url_for('admin.add_user') }}" class="btn btn-primary bg-success"><i class="fas fa-user-plus"></i></a>
 <br>
 <h4>Available Users:</h4>
 <table class="table">
@@ -45,9 +45,9 @@
             <td>{{ "Yes" if user.isDoctor else "No" }}</td>
             <td>{{ "Yes" if user.isPatient else "No" }}</td>
             <td>{{ "Yes" if user.isActive else "No" }}</td>
-            <td><a href="{{ url_for('pages.edit_user', _id=user._id) }}" class="btn btn-primary"><i
+            <td><a href="{{ url_for('admin.edit_user', _id=user._id) }}" class="btn btn-primary"><i
                         class="fas fa-pencil-alt"></i></a></td>
-            <td><a href="{{ url_for('pages.delete_user', _id=user._id) }}" class="btn btn-danger"><i
+            <td><a href="{{ url_for('admin.delete_user', _id=user._id) }}" class="btn btn-danger"><i
                         class="fas fa-trash-alt"></i></a></td>
         </tr>
         {% endfor %}

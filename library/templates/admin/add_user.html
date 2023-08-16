@@ -19,7 +19,7 @@
 
 {% if current_user.isAdmin %}
 <h4>Create new user</h4>
-<form method="post" action="{{ url_for('pages.add_user')}}">
+<form method="post" action="{{ url_for('admin.add_user')}}">
    
     <div class="form-group">
         {{ form.email.label }} {{ form.email(class="form-control") }}
