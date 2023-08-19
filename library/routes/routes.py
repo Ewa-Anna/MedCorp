@@ -58,13 +58,20 @@ def home():
                 else:
                     display_doctor.append(None)
 
-                return render_template("main/home.html", booked_app=booked_app, appointment=appointment, doctor_profiles=doctor_profiles, doctor_profile=doctor_profile)
+                return render_template("main/home.html",
+                                       booked_app=booked_app,
+                                       appointment=appointment,
+                                       doctor_profiles=doctor_profiles,
+                                       doctor_profile=doctor_profile)
 
         else:
             display = []
             display_doctor = []
 
-        return render_template("main/home.html", booked_app=booked_app, appointment=appointment, doctor_profiles=doctor_profiles)
+        return render_template("main/home.html",
+                               booked_app=booked_app,
+                               appointment=appointment,
+                               doctor_profiles=doctor_profiles)
 
     return render_template("main/home.html")
 
@@ -87,7 +94,9 @@ def appointment():
         else:
             appointments = []
 
-        return render_template("main/appointment.html", specs=Specializations.query.all(), appointment=appointments, selected_specialization=selected_specialization)
+        return render_template("main/appointment.html", specs=Specializations.query.all(),
+                               appointment=appointments,
+                               selected_specialization=selected_specialization)
 
 
 @pages.route("/app_details/<int:app_id>", methods=["GET", "POST"])
@@ -139,7 +148,14 @@ def app_details(app_id: int):
     else:
         doctor_profile = None
 
-    return render_template('main/app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile, specialization=specialization, age=age, month=month, gender=gender)
+    return render_template('main/app_details.html',
+                           appointment=appointment,
+                           form=form,
+                           doctor_profile=doctor_profile,
+                           specialization=specialization,
+                           age=age,
+                           month=month,
+                           gender=gender)
 
 
 @pages.route("/profile/<int:_id>", methods=["GET", "POST"])
@@ -215,4 +231,3 @@ def delete_app_patient(app_id):
         db.session.commit()
     flash("Appointment deleted successfully.", "success")
     return redirect(request.referrer)
-

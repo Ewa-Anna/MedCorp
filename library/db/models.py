@@ -3,10 +3,11 @@ from flask_login import UserMixin
 from .db import db
 from datetime import datetime
 
+
 @dataclass
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
-    
+
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
@@ -27,11 +28,11 @@ class User(UserMixin, db.Model):
         self.isPatient = isPatient
         self.isActive = isActive
 
-
     def get_id(self):
         return self._id
 
     specializations = db.relationship("Specializations", uselist=False, cascade="delete")
+
 
 class Profile(db.Model):
     __tablename__ = 'profile'
@@ -68,8 +69,9 @@ class Appointment(db.Model):
     createdDate = db.Column(db.DateTime,
                             default=datetime.utcnow, nullable=False)
     recommendations = db.Column(db.Text)
-    
+
     profile = db.relationship("Profile", uselist=False)
+
 
 class Specializations(db.Model):
     __tablename__ = 'specializations'

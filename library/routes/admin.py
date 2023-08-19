@@ -161,7 +161,9 @@ def content():
             display_doctor.append(None)
             return render_template("admin/content.html", doctor_profile=doctor_profile)
 
-    return render_template("admin/content.html", form=form, specializations=specializations, appointments=appointments, doctor_profile=doctor_profile)
+    return render_template("admin/content.html", form=form,
+                           specializations=specializations,
+                           appointments=appointments, doctor_profile=doctor_profile)
 
 
 @admin.route("/adminpanel/content/delete_spec/<int:spec_id>")
@@ -181,8 +183,9 @@ def analytics():
     total_users = User.query.count()
     doctors_count = User.query.filter_by(isDoctor=True).count()
     appointments_count = Appointment.query.count()
-    return render_template("admin/analytics.html", total_users=total_users, doctors_count=doctors_count, appointments_count=appointments_count)
-
+    return render_template("admin/analytics.html", total_users=total_users,
+                           doctors_count=doctors_count,
+                           appointments_count=appointments_count)
 
 
 @admin.route("/get_data", methods=["GET"])

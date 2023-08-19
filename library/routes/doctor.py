@@ -42,13 +42,13 @@ def edit_recommendation(app_id: int):
 
     if appointment.doctor_id != current_user._id:
         flash("You are not authorized. Please log in as a doctor.", "danger")
-    
+
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(appointment)
         db.session.commit()
         flash("Recommendation updated successfully.", "success")
         return redirect(url_for("pages.app_details", app_id=app_id))
-    
+
     return render_template("doctor/edit_recommendation.html", form=form, appointment=appointment)
 
 
@@ -57,7 +57,7 @@ def edit_recommendation(app_id: int):
 def delete_recommendations(app_id: int):
     if request.method == "POST":
         appointment = Appointment.query.get_or_404(app_id)
-        
+
         if appointment.doctor_id != current_user._id:
             flash("You are not authorized. Please log in as a doctor.", "danger")
         else:
@@ -68,4 +68,3 @@ def delete_recommendations(app_id: int):
         return redirect(url_for("pages.app_details", app_id=app_id))
     else:
         return redirect(url_for("pages.app_details", app_id=app_id))
-    

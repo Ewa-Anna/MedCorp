@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, DateField, SelectField
+from wtforms import StringField, SubmitField, PasswordField, \
+    BooleanField, DateField, SelectField
 from wtforms.validators import InputRequired, Email, \
     Length, EqualTo, DataRequired
 from wtforms.widgets import TextArea
@@ -63,7 +64,10 @@ class EditProfile(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email()])
     telephone = StringField("Telephone", validators=[InputRequired(),
                                                      Length(min=9, max=10,
-                                                            message="Telephone number must be between 9 and 10 characters long.")])
+                                                            message="Telephone number \
+                                                                  must be between \
+                                                                  9 and 10 characters \
+                                                                    long.")])
     submit = SubmitField("Confirm")
 
 

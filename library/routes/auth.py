@@ -85,7 +85,7 @@ def register_post():
     return redirect(url_for(".login"))
 
 
-@authorize.route("/change_password/<int:_id>", methods=["GET","POST"])
+@authorize.route("/change_password/<int:_id>", methods=["GET", "POST"])
 @login_required
 def change_password(_id: int):
     form = ChangePassword()
@@ -100,17 +100,17 @@ def change_password(_id: int):
         if not check_password_hash(user.password, old_password):
             flash("Incorrect old password.", "danger")
             return render_template("auth/change_password.html", form=form, user=user)
-        
+
         if new_password == confirm_password:
             user.password = generate_password_hash(new_password, method='sha256')
             db.session.commit()
             flash("Password changed successfully", "success")
             return redirect(url_for("pages.profile", _id=_id, user=user))
-        
+
         else:
             flash("Passwords do not match", "danger")
             return render_template("auth/change_password.html", form=form, user=user)
-    
+
     return render_template("auth/change_password.html", form=form, user=user)
 
 
