@@ -30,6 +30,10 @@
     {% if appointment.patient_id %}
     <td>{{ appointment.profile.name }}</td>
     <td>{{ appointment.profile.surname }}</td>
+    <dt>Age</dt>
+    <td> {{ age }} years and {{ month }} months old</td>
+    <dt>Gender</dt>
+    <td> {{ gender }} </td>
     {% else %}
     <dd>Patient information not available</dd>
     {% endif %}
@@ -88,6 +92,7 @@
     <dd>Doctor information not available</dd>
     {% endif %}
   </dl>
+
   {% if not appointment.availability %}
 
   <div class="container">

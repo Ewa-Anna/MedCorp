@@ -1,5 +1,4 @@
 import os
-from config import Config
 from dotenv import load_dotenv
 
 from flask import Flask
@@ -24,7 +23,6 @@ EMAIL = os.environ.get("EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-app.config.from_object(Config)
 
 migrate = Migrate(app, db)
 

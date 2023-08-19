@@ -3,7 +3,6 @@ from flask_login import UserMixin
 from .db import db
 from datetime import datetime
 
-
 @dataclass
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
@@ -41,6 +40,7 @@ class Profile(db.Model):
     name = db.Column(db.String(100), unique=False)
     surname = db.Column(db.String(100), unique=False)
     birthdate = db.Column(db.DateTime, unique=False)
+    gender = db.Column(db.String(10))
     email = db.Column(db.String(100), unique=True)
     telephone = db.Column(db.Integer, unique=False)
     insurance = db.Column(db.Boolean)

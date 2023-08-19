@@ -5,8 +5,6 @@ from wtforms.validators import InputRequired, Email, \
 from wtforms.widgets import TextArea
 
 
-from datetime import date, timedelta
-
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email()])
     password = PasswordField("Password", validators=[InputRequired()])
@@ -61,6 +59,7 @@ class EditProfile(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     surname = StringField("Surname", validators=[DataRequired()])
     birthdate = DateField("Birthdate", format='%Y-%m-%d')
+    gender = SelectField("Gender", choices=["Male", "Female"])
     email = StringField("Email", validators=[InputRequired(), Email()])
     telephone = StringField("Telephone", validators=[InputRequired(),
                                                      Length(min=9, max=10,

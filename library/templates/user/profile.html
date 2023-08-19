@@ -13,11 +13,12 @@
 <p> Name: {{ profile_data.name }} </p>
 <p> Surname: {{ profile_data.surname }} </p>
 <p> Birthdate: {{ profile_data.get_birthdate() }} </p>
+<p> Gender: {{ profile_data.gender }}</p>
 <p> Email: {{ profile_data.email }} </p>
 <p> Telephone: {{ profile_data.telephone }} </p>
 <br>
 <a href="{{ url_for('pages.edit_profile', _id=profile_data._id) }}" class="btn btn-primary">Edit Profile</a>
-<a href="{{ url_for('authorize.change_password' )}}" class="btn btn-primary">Change Password</a>
+<a href="{{ url_for('authorize.change_password',  _id=profile_data._id )}}" class="btn btn-primary">Change Password</a>
 
 {% else %}
 <h3> User not found </h3>

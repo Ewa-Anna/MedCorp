@@ -7,6 +7,7 @@ from ..db.models import Profile, Specializations, Appointment, User
 from ..db.db import db
 
 from .mail import mail
+from ..valid import calculate_age
 
 import os
 from dotenv import load_dotenv
@@ -91,9 +92,16 @@ def appointment():
 
 @pages.route("/app_details/<int:app_id>", methods=["GET", "POST"])
 @login_required
-def app_details(app_id: int):  # for patient to book
+def app_details(app_id: int):
     appointment = Appointment.query.filter_by(app_id=app_id).first()
     form = BookApp()
+    patient_birthdate = appointment.profile.birthdate
+    gender = appointment.profile.gender
+
+    if appointment.patient_id:
+        age, month = calculate_age(patient_birthdate)
+    else:
+        age, month = None, None
 
     if not appointment:
         flash("Appointment not found.", "danger")
@@ -131,7 +139,7 @@ def app_details(app_id: int):  # for patient to book
     else:
         doctor_profile = None
 
-    return render_template('main/app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile, specialization=specialization)
+    return render_template('main/app_details.html', appointment=appointment, form=form, doctor_profile=doctor_profile, specialization=specialization, age=age, month=month, gender=gender)
 
 
 @pages.route("/profile/<int:_id>", methods=["GET", "POST"])

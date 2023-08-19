@@ -8,13 +8,13 @@
 
 <h4> Edit Recommendation </h4>
 
-<form method="post">
+<form method="post" action="{{ url_for('doctor.edit_recommendation', app_id=appointment.app_id)}}">
     {{ form.hidden_tag() }}
     <div class="form-group">
       <label>Edit Recommendation:</label>
-      <textarea class="form-control">{{ appointment.recommendations }}</textarea>
+      {{ form.recommendations(class="form-control") }}
     </div>
-    <button type="submit" class="btn btn-primary">Update</button>
+    {{ form.submit(class="btn btn-primary") }}
 </form>
 
 {% endblock %}

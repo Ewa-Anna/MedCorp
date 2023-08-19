@@ -1,27 +1,26 @@
 <h1> MedCorp </h1>
 
-This is a website for doctor's appointment registration for fictional medical company.
-<br>
-<b>Work still in progress.</b>
+This is a website for doctor's appointment registration for fictional medical company. Built with Flask framework and SQLAlchemy for database maintenance.
 <br>
 <h2> How to install and run the project? </h2>
-1. Clone the repository
-<br>
+<ol>
+<li> Clone the repository</li>
 <code> git clone https://github.com/Ewa-Anna/MedCorp </code>
-<br>
-2. Install dependencies
-<br>
+<li> Install dependencies</li>
 <code> pip install -r requirements.txt </code>
-<br>
-3. Run the code
-<br>
+<li> Run the code
+<ul>
+<li>Debug version</li>
 <code> flask --debug run </code>
-<br>
-4. Optional
-<br>
+<li> Production version</li>
+<code> flask run </code>
+</li>
+</ul>
+<li>Optional</li>
 <p>For e-mail sending funtionality remember to follow .env.template with your Gmail EMAIL and PASSWORD generated for application uses.
 <br> Follow support google article on how to generate password for application:
 <a href="https://support.google.com/mail/answer/185833?hl=en"> https://support.google.com/mail/answer/185833?hl=en </a></p>
+</ol>
 <h2> Project overview </h2>
 <p> This project contains three types of users: 
 <ul>
