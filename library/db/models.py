@@ -3,6 +3,8 @@ from flask_login import UserMixin
 from .db import db
 from datetime import datetime
 
+from werkzeug.security import generate_password_hash
+
 
 @dataclass
 class User(UserMixin, db.Model):
@@ -19,10 +21,12 @@ class User(UserMixin, db.Model):
     isPatient = db.Column(db.Boolean, default=True, nullable=False)
     isActive = db.Column(db.Boolean, default=True, nullable=False)
 
+    specializations = db.relationship("Specializations", uselist=False, cascade="delete")
+
     def __init__(self, email, password, isAdmin,
                  isDoctor, isPatient, isActive):
         self.email = email
-        self.password = password
+        self.password = generate_password_hash(password)
         self.isAdmin = isAdmin
         self.isDoctor = isDoctor
         self.isPatient = isPatient
@@ -30,9 +34,11 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self._id
+    
+    def hash_password(self, raw_password):
+        self.password = generate_password_hash(raw_password, method='sha256')
 
-    specializations = db.relationship("Specializations", uselist=False, cascade="delete")
-
+   
 
 class Profile(db.Model):
     __tablename__ = 'profile'

@@ -8,6 +8,7 @@ def test_isProperMail():
     assert isProperMail(invalid_email1) is False
     assert isProperMail(invalid_email2) is False
 
+
 def test_isProperTelephone():
     valid_phone = 123456789
     invalid_phone1 = "abc" # not numeric

@@ -7,3 +7,5 @@ library/*.pyc
 library/__pycache__
 list_directories.py
 .env
+.pytest_cache
+tests/__pycache__

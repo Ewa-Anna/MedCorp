@@ -71,7 +71,7 @@ def register_post():
         return render_template("auth/register.html")
 
     new_user = User(email=email,
-                    password=generate_password_hash(password, method='sha256'),
+                    password=password,
                     isAdmin=isAdmin,
                     isDoctor=isDoctor,
                     isPatient=isPatient,

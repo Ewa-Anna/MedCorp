@@ -14,46 +14,50 @@ from .routes.mail import mail
 from .db.models import User
 from .db.db import db
 
-app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get(
-    "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
 
-load_dotenv()
-EMAIL = os.environ.get("EMAIL")
-PASSWORD = os.environ.get("PASSWORD")
+migrate = Migrate()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+def create_app():
+    app = Flask(__name__)
+    app.config["SECRET_KEY"] = os.environ.get(
+        "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
 
-migrate = Migrate(app, db)
+    load_dotenv()
+    EMAIL_TO = os.environ.get("EMAIL_TO")
+    EMAIL_FROM = os.environ.get("EMAIL_FROM")
+    SMTP = os.environ.get("SMTP")
+    PASSWORD = os.environ.get("PASSWORD")
 
-db.init_app(app)
-with app.app_context():
-    db.create_all()
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
-# app.config["MAIL_DEBUG"] = True
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 465
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-# app.config["MAIL_SUPPRESS_SEND"] = False
-app.config["MAIL_USERNAME"] = EMAIL
-app.config["MAIL_PASSWORD"] = PASSWORD
-mail.init_app(app)
+    migrate.init_app(app, db)
 
-app.register_blueprint(pages)
-app.register_blueprint(authorize)
-app.register_blueprint(doctor)
-app.register_blueprint(admin)
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "authorize.login"
+    app.config["MAIL_SERVER"] = SMTP
+    # app.config["MAIL_PORT"] = 587
+    # app.config['MAIL_USE_TLS'] = True
+    app.config["MAIL_PORT"] = 465
+    app.config['MAIL_USE_SSL'] = True
+    # app.config["MAIL_SUPPRESS_SEND"] = True  <-- uncomment this line in case you do not want to send emails
+    app.config["MAIL_USERNAME"] = EMAIL_FROM
+    app.config["MAIL_PASSWORD"] = PASSWORD
+    mail.init_app(app)
+
+    app.register_blueprint(pages)
+    app.register_blueprint(authorize)
+    app.register_blueprint(doctor)
+    app.register_blueprint(admin)
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = "authorize.login"
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return app

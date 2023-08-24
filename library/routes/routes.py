@@ -13,7 +13,8 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-EMAIL = os.getenv("EMAIL")
+EMAIL_TO = os.getenv("EMAIL_TO")
+EMAIL_FROM = os.getenv("EMAIL_FROM")
 PASSWORD = os.getenv("PASSWORD")
 
 
@@ -199,8 +200,8 @@ def contact():
             flash("All fields are required.")
             return render_template("main/contact.html", form=form)
         else:
-            msg = Message(form.subject.data, sender=EMAIL,
-                          recipients=[EMAIL])
+            msg = Message(form.subject.data, sender=EMAIL_FROM,
+                          recipients=[EMAIL_TO])
             msg.body = """
             From: %s &lt;%s&gt;
             %s
