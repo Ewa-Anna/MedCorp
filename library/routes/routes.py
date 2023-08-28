@@ -1,20 +1,21 @@
 from flask import render_template, Blueprint, request, flash, abort, redirect, url_for
 from flask_login import login_required, current_user
-from flask_mail import Message
 
 from ..db.forms import ContactForm, EditProfile, BookApp
 from ..db.models import Profile, Specializations, Appointment, User
 from ..db.db import db
 
-from .mail import mail
 from ..valid import calculate_age
 
 import os
 from dotenv import load_dotenv
 
+import smtplib
+
 load_dotenv()
 EMAIL_TO = os.getenv("EMAIL_TO")
 EMAIL_FROM = os.getenv("EMAIL_FROM")
+SMTP = os.environ.get("SMTP")
 PASSWORD = os.getenv("PASSWORD")
 
 
@@ -200,13 +201,27 @@ def contact():
             flash("All fields are required.")
             return render_template("main/contact.html", form=form)
         else:
-            msg = Message(form.subject.data, sender=EMAIL_FROM,
-                          recipients=[EMAIL_TO])
-            msg.body = """
-            From: %s &lt;%s&gt;
-            %s
-            """ % (form.name.data, form.email.data, form.body.data)
-            mail.send(msg)
+            recipient = EMAIL_TO
+            subject = form.subject.data
+            sender = EMAIL_FROM
+            message = f"""
+            FROM: {form.name.data} <{form.email.data}>
+            {form.body.data}
+            """
+            
+            email_message = f"Subject: {subject}\nFrom: {sender}\nTo: {recipient}\n\n{message}"
+            
+            try:
+                with smtplib.SMTP(SMTP, 587) as server:
+                    server.starttls()
+                    server.login(EMAIL_FROM, PASSWORD)
+                    server.sendmail(sender, recipient, email_message)
+                    server.close()
+            except:
+                print("-"*30)
+                print(email_message)
+                print("-"*30)
+            
             return render_template("main/contact.html", success=True)
     elif request.method == "GET":
         return render_template("main/contact.html", form=form)

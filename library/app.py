@@ -9,7 +9,6 @@ from .routes.routes import pages
 from .routes.doctor import doctor
 from .routes.auth import authorize
 from .routes.admin import admin
-from .routes.mail import mail
 
 from .db.models import User
 from .db.db import db
@@ -22,12 +21,6 @@ def create_app():
     app.config["SECRET_KEY"] = os.environ.get(
         "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
 
-    load_dotenv()
-    EMAIL_TO = os.environ.get("EMAIL_TO")
-    EMAIL_FROM = os.environ.get("EMAIL_FROM")
-    SMTP = os.environ.get("SMTP")
-    PASSWORD = os.environ.get("PASSWORD")
-
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
     migrate.init_app(app, db)
@@ -35,16 +28,6 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         db.create_all()
-
-    app.config["MAIL_SERVER"] = SMTP
-    # app.config["MAIL_PORT"] = 587
-    # app.config['MAIL_USE_TLS'] = True
-    app.config["MAIL_PORT"] = 465
-    app.config['MAIL_USE_SSL'] = True
-    # app.config["MAIL_SUPPRESS_SEND"] = True  <-- uncomment this line in case you do not want to send emails
-    app.config["MAIL_USERNAME"] = EMAIL_FROM
-    app.config["MAIL_PASSWORD"] = PASSWORD
-    mail.init_app(app)
 
     app.register_blueprint(pages)
     app.register_blueprint(authorize)

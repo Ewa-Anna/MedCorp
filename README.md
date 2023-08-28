@@ -30,3 +30,9 @@ This is a website for doctor's appointment registration for fictional medical co
 </ul>
 </p>
 <p> All users can edit their profiles, maintain existing appointments (e.g. delete them) and use contact form. </p>
+<h2>Frameworks used:</h2>
+<ul>
+<li>Flask</li>
+<li>bootstrap</li>
+<li>jinja2</li>
+</ul>
