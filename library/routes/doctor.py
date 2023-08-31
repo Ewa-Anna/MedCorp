@@ -16,6 +16,9 @@ doctor = Blueprint(
 @doctor.route("/create_app", methods=["GET", "POST"])
 @login_required
 def create_app():  # for doctors to create
+    if current_user.doctor_id != current_user._id:
+        flash("You are not authorized. Please log in as a doctor.", "danger")
+
     if request.method == "POST":
         selected_date = request.form["selected_date"]
         selected_time = request.form["selected_time"]

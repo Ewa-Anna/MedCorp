@@ -195,7 +195,7 @@ def get_data():
     timeslots = []
     app_count = []
 
-    for app_time, count in app_data:
+    for count, app_time in app_data:
         timeslots.append(app_time)
         app_count.append(count)
 

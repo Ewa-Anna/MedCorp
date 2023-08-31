@@ -2,7 +2,8 @@ import os
 import pytest
 
 from library.app import create_app
-from library.db.models import User, Profile
+from library.db.models import User
+from library.db.db import db
 
 
 @pytest.fixture(scope='module')
@@ -23,17 +24,17 @@ def client(app):
 @pytest.fixture(scope='module')
 def test_client(app):
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
+    app = create_app()
     with app.test_client() as testing_client:
         with app.app_context():
+            db.create_all()
             yield testing_client
+            db.drop_all()
 
 
-@pytest.fixture(scope='module')
-def test_profile(test_db):
-    profile = Profile(_id=1, name="Patient", surname="Example")
-    test_db.session.add(profile)
-    test_db.session.commit()
-    return profile
+@pytest.fixture(scope="session")
+def test_db():
+    return db
 
 
 @pytest.fixture(scope='module')
