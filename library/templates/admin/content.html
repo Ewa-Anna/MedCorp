@@ -10,20 +10,11 @@
 
 {% if current_user.isAdmin %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="alert alert-primary" role="alert">
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
 <h4> Add new specialization </h4>
 <form method="POST">
     {{ form.hidden_tag() }}
-    {{ form.specialization }}
-    {{ form.submit }}
+    {{ form.specialization(class="form-control") }}
+    {{ form.submit(class="btn btn-primary") }}
 </form>
 <br>
 <h4> Existing Specializations </h4>

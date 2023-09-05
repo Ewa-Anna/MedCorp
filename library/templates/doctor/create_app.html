@@ -19,14 +19,6 @@
     <input class="btn btn-primary" type="submit" value="Submit">
 </form>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="flash-messages">
-    {% for message in messages %}
-    <div class="flash-message">{{ message }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/date_of_appointment.js') }}"></script>
+
 {% endblock %}

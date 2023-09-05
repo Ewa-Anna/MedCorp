@@ -6,16 +6,6 @@
 
 {% block main_content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="alert alert-primary" role="alert">
-  {% for message in messages %}
-  {{ message }}
-  {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
-
 <h3>Welcome to MedCorp! How can we help you?</h3>
 {% if current_user.isDoctor %}
 <h4> For Doctors: </h4>

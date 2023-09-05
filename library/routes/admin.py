@@ -199,9 +199,26 @@ def get_data():
         timeslots.append(app_time)
         app_count.append(count)
 
-    data = {
+   
+    grouped_data = {}
+    for i in range(len(timeslots)):
+        time = timeslots[i]
+        time_split = time.split(":")
+        hours = int(time_split[0])
+        minutes = int(time_split[1])
+        interval_hours = hours + (minutes // 30) * 0.5
+        interval = f"{interval_hours:.1f}"
+
+        if interval not in grouped_data:
+            grouped_data[interval] = 0
+        grouped_data[interval] += app_count[i]
+        grouped_data = {float(key): value for key, value in grouped_data.items()}
+       
+    response_data = {
+        "data": {
         "timeslots": timeslots,
         "app_count": app_count
-    }
+        },
+        "grouped_data": grouped_data}
 
-    return jsonify(data)
+    return jsonify(response_data)

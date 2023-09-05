@@ -47,11 +47,6 @@ li {
     text-align: left;
 }
 
-.main-box {
-    padding: 50px;
-    width: 80%;
-    margin: 0 auto;
-}
 
 #page-container {
     position: relative;
@@ -59,12 +54,13 @@ li {
 }
 
 #content-wrap {
-    padding-bottom: 2.5rem;
+    padding: 2.5rem;
 }
 
 .about {
     text-align: justify;
 }
+
 .flash {
     background-color: #FBB0B0;
     padding: 10px;
@@ -82,7 +78,8 @@ body {
 
 #footer {
     display: table-row;
-    height: 0;
+    height: 50px;
+    margin-top: -50px;
 }
 
 .appointment_container {

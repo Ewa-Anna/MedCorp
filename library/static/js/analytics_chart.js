@@ -5,12 +5,17 @@ fetch("/get_data")
     .then(data => {
         var ctx = document.getElementById("popularity").getContext("2d");
         new Chart(ctx, {
-            type: "horizontalBar",
+            type: "bar",
             data: {
-                labels: data.timeslots,
+                labels: Object.keys(data.grouped_data).map(time => {
+                    const hours = parseInt(time);
+                    const minutes = (time - hours) * 60;
+                    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes === 0 ? '00' : minutes.toString().padStart(2, '0')}`;
+                    return formattedTime;
+                }),
                 datasets: [{
                     label: "Popular timeslots",
-                    data: data.app_count,
+                    data: Object.values(data.grouped_data),
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -18,11 +23,10 @@ fetch("/get_data")
             },
             options: {
                 scales: {
-                    xAxes: [{
+                    yAxes: [{
                         ticks: {
                             beginAtZero: true
-                        }
-                    }]
+                        }}]
                 }
             }
         })

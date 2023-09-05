@@ -106,8 +106,13 @@ def appointment():
 def app_details(app_id: int):
     appointment = Appointment.query.filter_by(app_id=app_id).first()
     form = BookApp()
-    patient_birthdate = appointment.profile.birthdate
-    gender = appointment.profile.gender
+
+    if appointment.profile and appointment.profile.birthdate:
+        patient_birthdate = appointment.profile.birthdate
+        gender = appointment.profile.gender
+    else:
+        patient_birthdate = None
+        gender = None   
 
     if appointment.patient_id:
         age, month = calculate_age(patient_birthdate)
@@ -169,6 +174,10 @@ def profile(_id: int):
         if not profile_data:
             abort(404)
 
+        if not current_user.isAdmin:
+            if current_user._id != _id:
+                abort(403)
+
         return render_template("user/profile.html", profile_data=profile_data)
 
 
@@ -177,6 +186,9 @@ def profile(_id: int):
 def edit_profile(_id: int):
     profile_data = Profile.query.filter_by(userid=_id).first()
     form = EditProfile(obj=profile_data)
+
+    if current_user._id != _id:
+        abort(403)
 
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(profile_data)

@@ -36,7 +36,5 @@ This is a website for doctor's appointment registration for fictional medical co
 <li>bootstrap</li>
 <li>jinja2</li>
 </ul>
-<ul>
-<li>Running tests</li>
+<h2>Running tests</h2>
 <code>pytest</code>
-</ul>

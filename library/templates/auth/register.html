@@ -6,18 +6,8 @@
 
 {% block main_content %}
 <br>
-<div class="container col-5">
-  <h2 class="header-login">Register</h2>
 
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <div class="flash">
-    {{ messages[0] }}
-    <br>
-    <a href="{{ url_for('.login') }}"> Login page </a>.
-  </div>
-  {% endif %}
-  {% endwith %}
+  <h2 class="header-login">Register</h2>
 
   <form action="/register" name="register" method="post" novalidate>
 
@@ -33,15 +23,8 @@
       {{ form.confirm_password(class="form-control") }}
       <label class="form-label" for="confirm_password">Repeat password </label>
     </div>
-    <div class="form-check d-flex justify-content-center mb-4">
-      <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
-        aria-describedby="registerCheckHelpText" />
-      <label class="form-check-label" for="registerCheck">
-        I have read and agree to the terms
-      </label>
-    </div>
     {{ form.submit(class="btn btn-primary btn-block mb-3") }}
 
   </form>
-</div>
+
 {% endblock %}

@@ -10,6 +10,10 @@ def isProperTelephone(telephone):
 
 
 def calculate_age(birthdate):
+
+    if birthdate is None:
+        return None, None
+
     today = datetime.now()
     age = today.year - birthdate.year - \
         ((today.month, today.day) < (birthdate.month, birthdate.day))

@@ -8,7 +8,7 @@
 
 {% if current_user.isDoctor %}
 
-<p> Create empty appointment <a href="{{ url_for('pages.create_app') }}">here</a>. </p>
+<p> Create empty appointment <a href="{{ url_for('doctor.create_app') }}">here</a>. </p>
 
 {% else %}
 

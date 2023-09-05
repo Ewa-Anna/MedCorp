@@ -6,16 +6,6 @@
 
 {% block main_content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="alert alert-primary" role="alert">
-  {% for message in messages %}
-  {{ message }}
-  {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
-
 <div class="appointment_container">
   <h2>Appointment Details</h2>
   {% if current_user.isDoctor %}
@@ -31,9 +21,17 @@
     <td>{{ appointment.profile.name }}</td>
     <td>{{ appointment.profile.surname }}</td>
     <dt>Age</dt>
+    {% if age is not none and month is not none %}
     <td> {{ age }} years and {{ month }} months old</td>
+    {% else %}
+    <td>Age information not available </td>
+    {% endif %}
     <dt>Gender</dt>
+    {% if gender %}
     <td> {{ gender }} </td>
+    {% else %}
+    <td>Gender information not available </td>
+    {% endif %}
     {% else %}
     <dd>Patient information not available</dd>
     {% endif %}

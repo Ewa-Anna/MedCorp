@@ -25,16 +25,30 @@
         {{ navbar(current_user) }}
     </div>
 
+
     <main>
         <div id="page-container">
-            <div id="content-wrap" class="main-box">
+            <div id="content-wrap">
+                <div class="container col-6">
+                
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div  class="alert alert-primary" role="alert">
+                    {% for message in messages %}
+                    {{ message }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
                 {% block main_content %} {% endblock %}
             </div>
         </div>
+    </div>
     </main>
-
+    <div id="footer">
     {{ footer() }}
-
+    </div>
+    
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
