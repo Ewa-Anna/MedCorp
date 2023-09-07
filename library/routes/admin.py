@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, flash, redirect, url_for, jsonify
+from flask import render_template, Blueprint, request, flash, redirect, url_for, jsonify, abort
 from flask_login import login_required, current_user
 
 from sqlalchemy import func
@@ -28,6 +28,9 @@ def admin_panel():
 @admin.route("/adminpanel/delete_user/<int:_id>")
 @login_required
 def delete_user(_id: int):
+    if not current_user.isAdmin:
+        abort(403)
+        
     user = User.query.get_or_404(_id)
     profile = Profile.query.filter_by(userid=_id).first()
 
@@ -43,6 +46,9 @@ def delete_user(_id: int):
 @admin.route("/adminpanel/edit_user/<int:_id>", methods=["GET", "POST"])
 @login_required
 def edit_user(_id: int):
+    if not current_user.isAdmin:
+        abort(403)
+
     user = User.query.get_or_404(_id)
     profile = Profile.query.get_or_404(_id)
     form = EditUser(obj=user)
@@ -66,6 +72,8 @@ def edit_user(_id: int):
 @admin.route("/adminpanel/ava_users", methods=["GET"])
 @login_required
 def ava_users():
+    if not current_user.isAdmin:
+        abort(403)
     users = User.query.all()
     return render_template("admin/ava_users.html", users=users)
 
@@ -73,6 +81,9 @@ def ava_users():
 @admin.route("/adminpanel/add_user", methods=["GET", "POST"])
 @login_required
 def add_user():
+    if not current_user.isAdmin:
+        abort(403)
+
     form = CreateNewUser()
 
     if request.method == "POST":
@@ -119,6 +130,9 @@ def add_user():
 @admin.route("/adminpanel/content", methods=["GET", "POST"])
 @login_required
 def content():
+    if not current_user.isAdmin:
+        abort(403)
+
     form = AddSpecialization()
 
     if form.validate_on_submit():
@@ -168,6 +182,9 @@ def content():
 @admin.route("/adminpanel/content/delete_spec/<int:spec_id>")
 @login_required
 def delete_spec(spec_id):
+    if not current_user.isAdmin:
+        abort(403)
+
     specialization = Specializations.query.get_or_404(spec_id)
     db.session.delete(specialization)
     db.session.commit()
@@ -179,6 +196,9 @@ def delete_spec(spec_id):
 @admin.route("/adminpanel/analytics")
 @login_required
 def analytics():
+    if not current_user.isAdmin:
+        abort(403)
+
     total_users = User.query.count()
     doctors_count = User.query.filter_by(isDoctor=True).count()
     appointments_count = Appointment.query.count()

@@ -45,6 +45,7 @@ def edit_recommendation(app_id: int):
 
     if appointment.doctor_id != current_user._id:
         flash("You are not authorized. Please log in as a doctor.", "danger")
+        return redirect(url_for("pages.home"))
 
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(appointment)
@@ -63,6 +64,7 @@ def delete_recommendations(app_id: int):
 
         if appointment.doctor_id != current_user._id:
             flash("You are not authorized. Please log in as a doctor.", "danger")
+            return redirect(url_for("pages.home"))
         else:
             appointment.recommendations = None
             db.session.commit()

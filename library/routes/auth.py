@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, session, flash, redirect, url_for
+from flask import render_template, Blueprint, request, session, flash, redirect, url_for, abort
 from flask_login import login_user, login_required, logout_user, current_user
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -90,6 +90,9 @@ def register_post():
 def change_password(_id: int):
     form = ChangePassword()
     user = current_user
+    
+    if current_user._id != _id:
+        abort(403)
 
     if request.method == "POST":
         user = current_user

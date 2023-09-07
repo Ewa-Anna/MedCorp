@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -16,12 +15,18 @@ from .db.db import db
 
 migrate = Migrate()
 
-def create_app():
+def create_app(config_name='default'):
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = os.environ.get(
-        "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+    
+    if config_name == 'test':
+        app.config["SECRET_KEY"] = os.environ.get(
+            "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
+        app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///test.db'
+        app.config["TESTING"] = True
+    else:        
+        app.config["SECRET_KEY"] = os.environ.get(
+            "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///prod.db'
 
     migrate.init_app(app, db)
 
