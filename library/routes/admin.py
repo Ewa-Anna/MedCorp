@@ -1,11 +1,20 @@
-from flask import render_template, Blueprint, request, flash, redirect, url_for, jsonify, abort
+from flask import (
+    render_template,
+    Blueprint,
+    request,
+    flash,
+    redirect,
+    url_for,
+    jsonify,
+    abort,
+)
 from flask_login import login_required, current_user
 
 from sqlalchemy import func
 
 from werkzeug.security import generate_password_hash
 
-from ..db.forms import AddSpecialization, EditUser,  CreateNewUser
+from ..db.forms import AddSpecialization, EditUser, CreateNewUser
 from ..db.models import Profile, Specializations, Appointment, User
 from ..db.db import db
 
@@ -13,9 +22,7 @@ from ..valid import isProperMail
 
 
 admin = Blueprint(
-    "admin", __name__,
-    template_folder="templates",
-    static_folder="static"
+    "admin", __name__, template_folder="templates", static_folder="static"
 )
 
 
@@ -30,7 +37,7 @@ def admin_panel():
 def delete_user(_id: int):
     if not current_user.isAdmin:
         abort(403)
-        
+
     user = User.query.get_or_404(_id)
     profile = Profile.query.filter_by(userid=_id).first()
 
@@ -53,7 +60,8 @@ def edit_user(_id: int):
     profile = Profile.query.get_or_404(_id)
     form = EditUser(obj=user)
     form.specialization.choices = [
-        (spec._id, spec.specialization) for spec in Specializations.query.all()]
+        (spec._id, spec.specialization) for spec in Specializations.query.all()
+    ]
 
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(user)
@@ -66,7 +74,9 @@ def edit_user(_id: int):
         flash("User data has been updated", "success")
         return redirect(url_for("admin.ava_users", _id=user._id))
 
-    return render_template("admin/edit_user.html", form=form, user=user, profile=profile)
+    return render_template(
+        "admin/edit_user.html", form=form, user=user, profile=profile
+    )
 
 
 @admin.route("/adminpanel/ava_users", methods=["GET"])
@@ -109,12 +119,14 @@ def add_user():
             flash("Passwords are not matching.")
             return render_template("admin/add_user.html")
 
-        new_user = User(email=email,
-                        password=password,
-                        isAdmin=isAdmin,
-                        isDoctor=isDoctor,
-                        isPatient=isPatient,
-                        isActive=isActive)
+        new_user = User(
+            email=email,
+            password=password,
+            isAdmin=isAdmin,
+            isDoctor=isDoctor,
+            isPatient=isPatient,
+            isActive=isActive,
+        )
 
         profile = Profile(user=new_user, email=email)
 
@@ -138,45 +150,39 @@ def content():
     if form.validate_on_submit():
         specialization = form.specialization.data.strip()
         existing_specialization = Specializations.query.filter_by(
-            specialization=specialization).first()
+            specialization=specialization
+        ).first()
 
         if existing_specialization:
-            flash(
-                f"The specialization '{specialization}' already exists!", "danger")
+            flash(f"The specialization '{specialization}' already exists!", "danger")
         else:
             new_spec = Specializations(specialization=form.specialization.data)
             db.session.add(new_spec)
             db.session.commit()
-            flash(
-                f"The specialization '{specialization}' has been added!", "success")
+            flash(f"The specialization '{specialization}' has been added!", "success")
             return redirect(url_for("admin.content"))
 
     specializations = Specializations.query.all()
     appointments = Appointment.query.all()
-    appointment = Appointment.query.first()
-
-    if appointment.doctor_id:
-        doctor_profile = Profile.query.filter_by(
-            userid=appointment.doctor_id).first()
-    else:
-        doctor_profile = None
-
-    display = Appointment.query.filter_by(
-        patient_id=current_user._id).all()
 
     display_doctor = []
-    for appointment in display:
+    for appointment in appointments:
         if appointment.doctor_id:
             doctor_profile = Profile.query.filter_by(
-                userid=appointment.doctor_id).first()
+                userid=appointment.doctor_id
+            ).first()
             display_doctor.append(doctor_profile)
         else:
             display_doctor.append(None)
-            return render_template("admin/content.html", doctor_profile=doctor_profile)
 
-    return render_template("admin/content.html", form=form,
-                           specializations=specializations,
-                           appointments=appointments, doctor_profile=doctor_profile)
+    return render_template(
+        "admin/content.html",
+        form=form,
+        specializations=specializations,
+        appointments=appointments,
+        doctor_profile=doctor_profile,
+        display_doctor=display_doctor,
+    )
 
 
 @admin.route("/adminpanel/content/delete_spec/<int:spec_id>")
@@ -189,7 +195,9 @@ def delete_spec(spec_id):
     db.session.delete(specialization)
     db.session.commit()
     flash(
-        f"The specialization '{specialization.specialization}' has been deleted!", "success")
+        f"The specialization '{specialization.specialization}' has been deleted!",
+        "success",
+    )
     return redirect(url_for("admin.content"))
 
 
@@ -202,15 +210,21 @@ def analytics():
     total_users = User.query.count()
     doctors_count = User.query.filter_by(isDoctor=True).count()
     appointments_count = Appointment.query.count()
-    return render_template("admin/analytics.html", total_users=total_users,
-                           doctors_count=doctors_count,
-                           appointments_count=appointments_count)
+    return render_template(
+        "admin/analytics.html",
+        total_users=total_users,
+        doctors_count=doctors_count,
+        appointments_count=appointments_count,
+    )
 
 
 @admin.route("/get_data", methods=["GET"])
 def get_data():
-    app_data = db.session.query(func.count(
-        Appointment.app_id), Appointment.app_time).group_by(Appointment.app_time).all()
+    app_data = (
+        db.session.query(func.count(Appointment.app_id), Appointment.app_time)
+        .group_by(Appointment.app_time)
+        .all()
+    )
 
     timeslots = []
     app_count = []
@@ -219,7 +233,6 @@ def get_data():
         timeslots.append(app_time)
         app_count.append(count)
 
-   
     grouped_data = {}
     for i in range(len(timeslots)):
         time = timeslots[i]
@@ -233,12 +246,10 @@ def get_data():
             grouped_data[interval] = 0
         grouped_data[interval] += app_count[i]
         grouped_data = {float(key): value for key, value in grouped_data.items()}
-       
+
     response_data = {
-        "data": {
-        "timeslots": timeslots,
-        "app_count": app_count
-        },
-        "grouped_data": grouped_data}
+        "data": {"timeslots": timeslots, "app_count": app_count},
+        "grouped_data": grouped_data,
+    }
 
     return jsonify(response_data)

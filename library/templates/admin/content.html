@@ -51,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for app in appointments %}
+        {% for  app, doctor_profile in appointments|custom_zip(display_doctor) %}
         <tr>
             <td> {{ app.app_date }} </td>
             <td> {{ app.app_time }} </td>

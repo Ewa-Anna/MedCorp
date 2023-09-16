@@ -9,11 +9,11 @@ def test_not_a_doctor_authorization(app):
     assert User.query.count() == 1
 
     with app.test_client() as client:
-        response = client.post("/login", data={"email": test_user.email, "password": "123"})
+        response = client.post("/login", data={"email": test_user.email, "password": "123"},  follow_redirects=True)
         assert response.status_code == 200
 
         response = client.get("/create_app")
-        assert response.status_code == 403
+        assert response.status_code == 302
 
 
 def test_actual_doctor_autorization(app):

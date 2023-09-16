@@ -4,6 +4,8 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_login import LoginManager
 
+from jinja2 import Environment
+
 from .routes.routes import pages
 from .routes.doctor import doctor
 from .routes.auth import authorize
@@ -15,18 +17,18 @@ from .db.db import db
 
 migrate = Migrate()
 
-def create_app(config_name='default'):
+
+def create_app(test=False):
     app = Flask(__name__)
-    
-    if config_name == 'test':
-        app.config["SECRET_KEY"] = os.environ.get(
-            "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
-        app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///test.db'
+    app.config["SECRET_KEY"] = os.environ.get(
+        "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98"
+    )
+
+    if test:
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
         app.config["TESTING"] = True
-    else:        
-        app.config["SECRET_KEY"] = os.environ.get(
-            "SECRET_KEY", "c544081efca90d112b80ff0ce139dd98")
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///prod.db'
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///prod.db"
 
     migrate.init_app(app, db)
 
@@ -43,9 +45,13 @@ def create_app(config_name='default'):
     login_manager.init_app(app)
     login_manager.login_view = "authorize.login"
 
-
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+
+    def custom_zip(list1, list2):
+        return zip(list1, list2)
+
+    app.jinja_env.filters["custom_zip"] = custom_zip
 
     return app

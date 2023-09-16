@@ -1,4 +1,13 @@
-from flask import render_template, Blueprint, request, session, flash, redirect, url_for, abort
+from flask import (
+    render_template,
+    Blueprint,
+    request,
+    session,
+    flash,
+    redirect,
+    url_for,
+    abort,
+)
 from flask_login import login_user, login_required, logout_user, current_user
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,9 +19,7 @@ from ..db.db import db
 from ..valid import isProperMail
 
 authorize = Blueprint(
-    "authorize", __name__,
-    template_folder="templates",
-    static_folder="static"
+    "authorize", __name__, template_folder="templates", static_folder="static"
 )
 
 
@@ -70,12 +77,14 @@ def register_post():
         flash("Passwords are not matching.")
         return render_template("auth/register.html")
 
-    new_user = User(email=email,
-                    password=password,
-                    isAdmin=isAdmin,
-                    isDoctor=isDoctor,
-                    isPatient=isPatient,
-                    isActive=isActive)
+    new_user = User(
+        email=email,
+        password=password,
+        isAdmin=isAdmin,
+        isDoctor=isDoctor,
+        isPatient=isPatient,
+        isActive=isActive,
+    )
     profile = Profile(user=new_user, email=email)
 
     db.session.add(new_user)
@@ -90,7 +99,7 @@ def register_post():
 def change_password(_id: int):
     form = ChangePassword()
     user = current_user
-    
+
     if current_user._id != _id:
         abort(403)
 
@@ -105,7 +114,7 @@ def change_password(_id: int):
             return render_template("auth/change_password.html", form=form, user=user)
 
         if new_password == confirm_password:
-            user.password = generate_password_hash(new_password, method='sha256')
+            user.password = generate_password_hash(new_password, method="sha256")
             db.session.commit()
             flash("Password changed successfully", "success")
             return redirect(url_for("pages.profile", _id=_id, user=user))

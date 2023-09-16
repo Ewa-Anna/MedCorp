@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, flash,  redirect, url_for
+from flask import render_template, Blueprint, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from ..db.forms import EditRecommendation
@@ -7,9 +7,7 @@ from ..db.db import db
 
 
 doctor = Blueprint(
-    "doctor", __name__,
-    template_folder="templates",
-    static_folder="static"
+    "doctor", __name__, template_folder="templates", static_folder="static"
 )
 
 
@@ -18,6 +16,7 @@ doctor = Blueprint(
 def create_app():  # for doctors to create
     if current_user.isDoctor is False:
         flash("You are not authorized. Please log in as a doctor.", "danger")
+        return redirect(url_for("pages.home"))
 
     if request.method == "POST":
         selected_date = request.form["selected_date"]
@@ -27,7 +26,7 @@ def create_app():  # for doctors to create
             app_date=selected_date,
             app_time=selected_time,
             availability=True,
-            doctor_id=current_user._id
+            doctor_id=current_user._id,
         )
 
         db.session.add(new_app)
@@ -53,7 +52,9 @@ def edit_recommendation(app_id: int):
         flash("Recommendation updated successfully.", "success")
         return redirect(url_for("pages.app_details", app_id=app_id))
 
-    return render_template("doctor/edit_recommendation.html", form=form, appointment=appointment)
+    return render_template(
+        "doctor/edit_recommendation.html", form=form, appointment=appointment
+    )
 
 
 @doctor.route("/delete_recommendations/<int:app_id>", methods=["GET", "POST"])

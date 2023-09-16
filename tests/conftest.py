@@ -7,7 +7,7 @@ from library.db.db import db
 
 @pytest.fixture(scope='module')
 def app():
-    app = create_app('test')
+    app = create_app(test=True)
     with app.app_context():
         db.create_all()
         yield app

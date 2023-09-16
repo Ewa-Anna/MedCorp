@@ -20,9 +20,7 @@ PASSWORD = os.getenv("PASSWORD")
 
 
 pages = Blueprint(
-    "pages", __name__,
-    template_folder="templates",
-    static_folder="static"
+    "pages", __name__, template_folder="templates", static_folder="static"
 )
 
 
@@ -35,45 +33,50 @@ def home():
         if current_user.is_authenticated:
             if current_user.isDoctor:
                 appointment = Appointment.query.filter_by(
-                    doctor_id=current_user._id).all()
+                    doctor_id=current_user._id
+                ).all()
 
             elif current_user.isPatient:
                 booked_app = Appointment.query.filter_by(
-                    patient_id=current_user._id).all()
+                    patient_id=current_user._id
+                ).all()
 
         doctor_profiles = {}
         for app in appointment:
-            doctor_profile = Profile.query.filter_by(
-                userid=app.doctor_id).first()
+            doctor_profile = Profile.query.filter_by(userid=app.doctor_id).first()
             doctor_profiles[app.doctor_id] = doctor_profile
 
         if current_user.is_authenticated:
-            display = Appointment.query.filter_by(
-                patient_id=current_user._id).all()
+            display = Appointment.query.filter_by(patient_id=current_user._id).all()
 
             display_doctor = []
             for appointment in display:
                 if appointment.doctor_id:
                     doctor_profile = Profile.query.filter_by(
-                        userid=appointment.doctor_id).first()
+                        userid=appointment.doctor_id
+                    ).first()
                     display_doctor.append(doctor_profile)
                 else:
                     display_doctor.append(None)
 
-                return render_template("main/home.html",
-                                       booked_app=booked_app,
-                                       appointment=appointment,
-                                       doctor_profiles=doctor_profiles,
-                                       doctor_profile=doctor_profile)
+                return render_template(
+                    "main/home.html",
+                    booked_app=booked_app,
+                    appointment=appointment,
+                    doctor_profiles=doctor_profiles,
+                    doctor_profile=doctor_profile,
+                )
 
         else:
             display = []
             display_doctor = []
 
-        return render_template("main/home.html",
-                               booked_app=booked_app,
-                               appointment=appointment,
-                               doctor_profiles=doctor_profiles)
+        return render_template(
+            "main/home.html",
+            booked_app=booked_app,
+            appointment=appointment,
+            doctor_profiles=doctor_profiles,
+        )
 
     return render_template("main/home.html")
 
@@ -88,17 +91,24 @@ def appointment():
     elif request.method == "POST":
         selected_specialization = request.form.get("specs")
         specs_id = Specializations.query.filter_by(
-            specialization=selected_specialization).first()
+            specialization=selected_specialization
+        ).first()
 
         if specs_id:
-            appointments = Appointment.query.join(User, Appointment.doctor_id == User._id).filter(
-                User.specs_id == specs_id._id, Appointment.availability == True).all()
+            appointments = (
+                Appointment.query.join(User, Appointment.doctor_id == User._id)
+                .filter(User.specs_id == specs_id._id, Appointment.availability == True)
+                .all()
+            )
         else:
             appointments = []
 
-        return render_template("main/appointment.html", specs=Specializations.query.all(),
-                               appointment=appointments,
-                               selected_specialization=selected_specialization)
+        return render_template(
+            "main/appointment.html",
+            specs=Specializations.query.all(),
+            appointment=appointments,
+            selected_specialization=selected_specialization,
+        )
 
 
 @pages.route("/app_details/<int:app_id>", methods=["GET", "POST"])
@@ -112,7 +122,7 @@ def app_details(app_id: int):
         gender = appointment.profile.gender
     else:
         patient_birthdate = None
-        gender = None   
+        gender = None
 
     if appointment.patient_id:
         age, month = calculate_age(patient_birthdate)
@@ -142,11 +152,12 @@ def app_details(app_id: int):
         db.session.commit()
 
         flash("Recommendations submitted successfully!", "success")
-        return redirect(url_for("pages.app_details", app_id=app_id, appointment=appointment))
+        return redirect(
+            url_for("pages.app_details", app_id=app_id, appointment=appointment)
+        )
 
     if appointment.doctor_id:
-        doctor_profile = Profile.query.filter_by(
-            userid=appointment.doctor_id).first()
+        doctor_profile = Profile.query.filter_by(userid=appointment.doctor_id).first()
         user = User.query.get(appointment.doctor_id)
         if user:
             specialization = Specializations.query.get(user.specs_id)
@@ -155,14 +166,16 @@ def app_details(app_id: int):
     else:
         doctor_profile = None
 
-    return render_template('main/app_details.html',
-                           appointment=appointment,
-                           form=form,
-                           doctor_profile=doctor_profile,
-                           specialization=specialization,
-                           age=age,
-                           month=month,
-                           gender=gender)
+    return render_template(
+        "main/app_details.html",
+        appointment=appointment,
+        form=form,
+        doctor_profile=doctor_profile,
+        specialization=specialization,
+        age=age,
+        month=month,
+        gender=gender,
+    )
 
 
 @pages.route("/profile/<int:_id>", methods=["GET", "POST"])
@@ -196,7 +209,9 @@ def edit_profile(_id: int):
         flash("Profile updated successfully!", "success")
         return redirect(url_for("pages.profile", _id=_id))
 
-    return render_template("user/edit_profile.html", profile_data=profile_data, form=form)
+    return render_template(
+        "user/edit_profile.html", profile_data=profile_data, form=form
+    )
 
 
 @pages.route("/about")
@@ -220,9 +235,11 @@ def contact():
             FROM: {form.name.data} <{form.email.data}>
             {form.body.data}
             """
-            
-            email_message = f"Subject: {subject}\nFrom: {sender}\nTo: {recipient}\n\n{message}"
-            
+
+            email_message = (
+                f"Subject: {subject}\nFrom: {sender}\nTo: {recipient}\n\n{message}"
+            )
+
             try:
                 with smtplib.SMTP(SMTP, 587) as server:
                     server.starttls()
@@ -230,10 +247,10 @@ def contact():
                     server.sendmail(sender, recipient, email_message)
                     server.close()
             except:
-                print("-"*30)
+                print("-" * 30)
                 print(email_message)
-                print("-"*30)
-            
+                print("-" * 30)
+
             return render_template("main/contact.html", success=True)
     elif request.method == "GET":
         return render_template("main/contact.html", form=form)
