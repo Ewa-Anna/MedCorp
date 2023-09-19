@@ -2,6 +2,8 @@
 
 This is a website for doctor's appointment registration for fictional medical company. Built with Flask framework and SQLAlchemy for database maintenance.
 <br>
+[Live Version](https://medcorp.onrender.com/)
+<br>
 <h2> How to install and run the project? </h2>
 <ol>
 <li> Clone the repository</li>
