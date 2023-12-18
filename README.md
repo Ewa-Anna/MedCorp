@@ -4,6 +4,14 @@ This is a website for doctor's appointment registration for fictional medical co
 <br>
 [Live Version](https://medcorp.onrender.com/)
 <br>
+<br>
+Credentials for overview purposes:
+| Role | E-mail | Password |
+|------|--------|----------|
+| Admin | admin@admin.com | admin@admin.com |
+| Doctor | doctor@doctor.com | doctor@doctor.com |
+| Patient | patient@patient.com | patient@patient.com |
+
 <h2> How to install and run the project? </h2>
 <ol>
 <li> Clone the repository</li>
