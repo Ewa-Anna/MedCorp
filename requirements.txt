@@ -1,4 +1,4 @@
-﻿alembic==1.11.3
+﻿alembic==1.13.2
 beautifulsoup4==4.12.2
 black==23.9.1
 blinker==1.6.2
