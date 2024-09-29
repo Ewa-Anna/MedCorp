@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12.6
 EXPOSE 5000
 WORKDIR /app
 COPY requirements.txt .
