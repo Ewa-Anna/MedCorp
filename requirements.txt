@@ -32,7 +32,7 @@ pycodestyle==2.12.1
 pyflakes==3.2.0
 pytest==7.4.0
 python-dotenv==1.0.0
-soupsieve==2.5
+soupsieve==2.6
 SQLAlchemy==2.0.20
 tomli==2.0.1
 typing_extensions==4.7.1
