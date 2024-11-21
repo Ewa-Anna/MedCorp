@@ -26,7 +26,7 @@ mccabe==0.7.0
 mypy-extensions==1.0.0
 packaging==23.1
 pathspec==0.11.2
-platformdirs==3.10.0
+platformdirs==4.3.6
 pluggy==1.2.0
 pycodestyle==2.12.1
 pyflakes==3.2.0
