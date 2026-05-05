@@ -1,4 +1,4 @@
-﻿alembic==1.11.3
+alembic==1.11.3
 beautifulsoup4==4.12.2
 black==23.9.1
 blinker==1.8.2
@@ -15,7 +15,7 @@ Flask-Mail==0.9.1
 Flask-Migrate==4.0.7
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.2.2
-greenlet==2.0.2
+greenlet==3.5.0
 idna==3.4
 iniconfig==2.0.0
 itsdangerous==2.2.0
